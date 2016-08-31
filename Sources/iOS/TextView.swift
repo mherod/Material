@@ -148,8 +148,6 @@ public class TextView: UITextView {
 		didSet {
 			if shadowPathAutoSizeEnabled {
 				layoutShadowPath()
-			} else {
-				shadowPath = nil
 			}
 		}
 	}
@@ -327,7 +325,7 @@ public class TextView: UITextView {
 	- Parameter textContainer: A NSTextContainer instance.
 	*/
 	public convenience init(textContainer: NSTextContainer?) {
-		self.init(frame: CGRectZero, textContainer: textContainer)
+		self.init(frame: CGRect.zero, textContainer: textContainer)
 	}
 	
 	/** Denitializer. This should never be called unless you know
@@ -340,15 +338,9 @@ public class TextView: UITextView {
 	/// Overriding the layout callback for subviews.
 	public override func layoutSubviews() {
 		super.layoutSubviews()
+		layoutShadowPath()
 		placeholderLabel?.preferredMaxLayoutWidth = textContainer.size.width - textContainer.lineFragmentPadding * 2
 		titleLabel?.frame.size.width = bounds.width
-	}
-	
-	public override func layoutSublayersOfLayer(layer: CALayer) {
-		super.layoutSublayersOfLayer(layer)
-		if self.layer == layer {
-			layoutShadowPath()
-		}
 	}
 	
 	/**
@@ -409,8 +401,7 @@ public class TextView: UITextView {
 	internal func reloadView() {
 		if let p = placeholderLabel {
 			removeConstraints(constraints)
-			MaterialLayout.alignToParent(self,
-				child: p,
+			layout(p).edges(
 				top: textContainerInset.top,
 				left: textContainerInset.left + textContainer.lineFragmentPadding,
 				bottom: textContainerInset.bottom,
@@ -479,7 +470,6 @@ public class TextView: UITextView {
 	/// prepares the placeholderLabel property.
 	private func preparePlaceholderLabel() {
 		if let v: UILabel = placeholderLabel {
-			v.translatesAutoresizingMaskIntoConstraints = false
 			v.font = font
 			v.textAlignment = textAlignment
 			v.numberOfLines = 0
@@ -513,9 +503,11 @@ public class TextView: UITextView {
 				let h: CGFloat = ceil(v.font.lineHeight)
 				v.frame = CGRectMake(0, -h, bounds.width, h)
 				v.hidden = false
-				UIView.animateWithDuration(0.25, animations: { [unowned self] in
-					v.alpha = 1
-					v.frame.origin.y = -v.frame.height - self.titleLabelAnimationDistance
+				UIView.animateWithDuration(0.25, animations: { [weak self] in
+					if let s: TextView = self {
+						v.alpha = 1
+						v.frame.origin.y = -v.frame.height - s.titleLabelAnimationDistance
+					}
 				})
 			}
 		}

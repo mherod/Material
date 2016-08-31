@@ -35,80 +35,40 @@ class RecipesViewController: UIViewController {
 	/// A list of all the data source items.
 	private var dataSourceItems: Array<MaterialDataSourceItem>!
 	
-	/// NavigationBar title label.
-	private var titleLabel: UILabel!
-	
-	/// NavigationBar menu button.
-	private var menuButton: IconButton!
-	
-	/// NavigationBar switch control.
-	private var switchControl: MaterialSwitch!
-	
-	/// NavigationBar search button.
-	private var searchButton: IconButton!
-	
 	/// A tableView used to display items.
 	private var tableView: UITableView!
+	
+	required init?(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)
+	}
+	
+	override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+		super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+	}
+	
+	init() {
+		super.init(nibName: nil, bundle: nil)
+		prepareTabBarItem()
+	}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		prepareView()
 		prepareItems()
-		prepareTitleLabel()
-		prepareMenuButton()
-		prepareSwitchControl()
-		prepareSearchButton()
-		prepareNavigationItem()
 		prepareTableView()
 	}
 	
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
 		// Stops the tableView contentInsets from being automatically adjusted.
-		automaticallyAdjustsScrollViewInsets = false
-		
-		// Set the navigationBar style.
-		navigationController?.navigationBar.statusBarStyle = .LightContent
-		
-		// Enable the SideNavigation.
-		sideNavigationController?.enabled = true
+		edgesForExtendedLayout = .None
 	}
 	
 	override func viewDidAppear(animated: Bool) {
 		super.viewDidAppear(animated)
-		// Show the menuView.
-		menuViewController?.menuView.animate(MaterialAnimation.animationGroup([
-			MaterialAnimation.rotate(rotation: 3),
-			MaterialAnimation.translateY(0)
-		]))
-	}
-	
-	override func viewWillDisappear(animated: Bool) {
-		super.viewWillDisappear(animated)
-		// Disable the SideNavigation.
-		
-		// Hide the menuView.
-		menuViewController?.menuView.animate(MaterialAnimation.animationGroup([
-			MaterialAnimation.rotate(rotation: 3),
-			MaterialAnimation.translateY(150)
-		]))
-	}
-	
-	/// Handles the menuButton.
-	internal func handleMenuButton() {
-		sideNavigationController?.openLeftView()
-	}
-	
-	/// Handles the searchButton.
-	internal func handleSearchButton() {
-		var recommended: Array<MaterialDataSourceItem> = Array<MaterialDataSourceItem>()
-		recommended.append(dataSourceItems[1])
-		recommended.append(dataSourceItems[3])
-		recommended.append(dataSourceItems[5])
-		
-		let vc: AppSearchBarController = AppSearchBarController(rootViewController: RecommendationViewController(dataSourceItems: recommended))
-		vc.modalTransitionStyle = .CrossDissolve
-		presentViewController(vc, animated: true, completion: nil)
+		// Enable the NavigationDrawer.
+		navigationDrawerController?.enabled = true
+		(menuController as? AppMenuController)?.showMenuView()
 	}
 	
 	/// Prepares the items Array.
@@ -218,46 +178,6 @@ class RecipesViewController: UIViewController {
 		view.backgroundColor = MaterialColor.white
 	}
 	
-	/// Prepares the titleLabel.
-	private func prepareTitleLabel() {
-		titleLabel = UILabel()
-		titleLabel.text = "Recipes"
-		titleLabel.textAlignment = .Left
-		titleLabel.textColor = MaterialColor.white
-	}
-	
-	/// Prepares the menuButton.
-	private func prepareMenuButton() {
-		let image: UIImage? = MaterialIcon.cm.menu
-		menuButton = IconButton()
-		menuButton.pulseColor = MaterialColor.white
-		menuButton.setImage(image, forState: .Normal)
-		menuButton.setImage(image, forState: .Highlighted)
-		menuButton.addTarget(self, action: #selector(handleMenuButton), forControlEvents: .TouchUpInside)
-	}
-	
-	/// Prepares the switchControl.
-	private func prepareSwitchControl() {
-		switchControl = MaterialSwitch(state: .Off, style: .LightContent, size: .Small)
-	}
-	
-	/// Prepares the searchButton.
-	private func prepareSearchButton() {
-		let image: UIImage? = MaterialIcon.cm.search
-		searchButton = IconButton()
-		searchButton.pulseColor = MaterialColor.white
-		searchButton.setImage(image, forState: .Normal)
-		searchButton.setImage(image, forState: .Highlighted)
-		searchButton.addTarget(self, action: #selector(handleSearchButton), forControlEvents: .TouchUpInside)
-	}
-	
-	/// Prepares the navigationItem.
-	private func prepareNavigationItem() {
-		navigationItem.titleLabel = titleLabel
-		navigationItem.leftControls = [menuButton]
-		navigationItem.rightControls = [switchControl, searchButton]
-	}
-	
 	/// Prepares the tableView.
 	private func prepareTableView() {
 		tableView = UITableView()
@@ -265,10 +185,15 @@ class RecipesViewController: UIViewController {
 		tableView.dataSource = self
 		tableView.delegate = self
 		
-		// Use MaterialLayout to easily align the tableView.
-		view.addSubview(tableView)
-		tableView.translatesAutoresizingMaskIntoConstraints = false
-		MaterialLayout.alignToParent(view, child: tableView)
+		// Use Layout to easily align the tableView.
+		view.layout(tableView).edges()
+	}
+	
+	/// Prepare tabBarItem.
+	private func prepareTabBarItem() {
+		tabBarItem.image = MaterialIcon.cm.photoLibrary
+		tabBarItem.setTitleColor(MaterialColor.grey.base, forState: .Normal)
+		tabBarItem.setTitleColor(MaterialColor.white, forState: .Selected)
 	}
 }
 
@@ -313,9 +238,7 @@ extension RecipesViewController: UITableViewDataSource {
 		label.textColor = MaterialColor.grey.darken1
 		label.text = "Favorites"
 		
-		header.addSubview(label)
-		label.translatesAutoresizingMaskIntoConstraints = false
-		MaterialLayout.alignToParent(header, child: label, left: 24)
+		header.layout(label).edges(left: 24)
 		
 		return header
 	}

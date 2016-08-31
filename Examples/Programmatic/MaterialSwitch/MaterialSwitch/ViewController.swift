@@ -50,64 +50,47 @@ class ViewController: UIViewController, MaterialSwitchDelegate {
 	private func prepareView() {
 		view.backgroundColor = MaterialColor.white
 		
-		view.addSubview(topView)
-		topView.translatesAutoresizingMaskIntoConstraints = false
-		
-		view.addSubview(bottomView)
-		bottomView.translatesAutoresizingMaskIntoConstraints = false
 		bottomView.backgroundColor = MaterialColor.grey.darken4
 		
-		MaterialLayout.alignToParentHorizontally(view, child: topView)
-		MaterialLayout.alignToParentHorizontally(view, child: bottomView)
-		MaterialLayout.alignToParentVertically(view, children: [topView, bottomView])
+		view.layout.horizontally(topView)
+		view.layout.horizontally(bottomView)
+		view.layout.vertically([topView, bottomView])
 	}
 	
 	/// Prepares the LightContent MaterialSwitch.
 	private func prepareLightContentMaterialSwitch() {
 		let c1: MaterialSwitch = MaterialSwitch(state: .Off, style: .LightContent, size: .Small)
 		c1.delegate = self
-		c1.translatesAutoresizingMaskIntoConstraints = false
-		topView.addSubview(c1)
 		
 		let c2: MaterialSwitch = MaterialSwitch(state: .On, style: .LightContent)
 		c2.delegate = self
-		c2.translatesAutoresizingMaskIntoConstraints = false
-		topView.addSubview(c2)
 		
 		let c3: MaterialSwitch = MaterialSwitch(state: .Off, style: .LightContent, size: .Large)
 		c3.delegate = self
 		c3.enabled = false
-		c3.translatesAutoresizingMaskIntoConstraints = false
-		topView.addSubview(c3)
 		
-		MaterialLayout.alignToParentHorizontally(topView, child: c1)
-		MaterialLayout.alignToParentHorizontally(topView, child: c2)
-		MaterialLayout.alignToParentHorizontally(topView, child: c3)
-		MaterialLayout.alignToParentVertically(topView, children: [c1, c2, c3])
+		topView.layout.horizontally(c1)
+		topView.layout.horizontally(c2)
+		topView.layout.horizontally(c3)
+		topView.layout.vertically([c1, c2, c3])
 	}
 	
 	/// Prepares the LightContent MaterialSwitch.
 	private func prepareDefaultMaterialSwitch() {
 		let c1: MaterialSwitch = MaterialSwitch(state: .Off, style: .Default, size: .Small)
 		c1.delegate = self
-		c1.translatesAutoresizingMaskIntoConstraints = false
-		bottomView.addSubview(c1)
 		
 		let c2: MaterialSwitch = MaterialSwitch(state: .On)
 		c2.delegate = self
-		c2.translatesAutoresizingMaskIntoConstraints = false
-		bottomView.addSubview(c2)
 		
 		let c3: MaterialSwitch = MaterialSwitch(state: .Off, style: .Default, size: .Large)
 		c3.delegate = self
 		c3.enabled = false
-		c3.translatesAutoresizingMaskIntoConstraints = false
-		bottomView.addSubview(c3)
 		
-		MaterialLayout.alignToParentHorizontally(bottomView, child: c1)
-		MaterialLayout.alignToParentHorizontally(bottomView, child: c2)
-		MaterialLayout.alignToParentHorizontally(bottomView, child: c3)
-		MaterialLayout.alignToParentVertically(bottomView, children: [c1, c2, c3])
+		bottomView.layout.horizontally(c1)
+		bottomView.layout.horizontally(c2)
+		bottomView.layout.horizontally(c3)
+		bottomView.layout.vertically([c1, c2, c3])
 	}
 	
 	internal func materialSwitchStateChanged(control: MaterialSwitch) {

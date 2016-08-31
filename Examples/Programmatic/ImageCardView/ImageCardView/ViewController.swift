@@ -65,7 +65,7 @@ class ViewController: UIViewController {
 		let detailLabel: UILabel = UILabel()
 		detailLabel.text = "It’s been a while, have you read any new books lately?"
 		detailLabel.numberOfLines = 0
-		imageCardView.detailView = detailLabel
+		imageCardView.contentView = detailLabel
 		
 		// Yes button.
 		let btn1: FlatButton = FlatButton()
@@ -82,15 +82,13 @@ class ViewController: UIViewController {
 		// Add buttons to left side.
 		imageCardView.leftButtons = [btn1, btn2]
 		
-		// To support orientation changes, use MaterialLayout.
-		view.addSubview(imageCardView)
-		imageCardView.translatesAutoresizingMaskIntoConstraints = false
-		MaterialLayout.alignFromTop(view, child: imageCardView, top: 100)
-		MaterialLayout.alignToParentHorizontally(view, child: imageCardView, left: 20, right: 20)
+		// To support orientation changes, use Layout.
+		view.layout(imageCardView).top(100).left(20).right(20)
 	}
 	
 	private func prepareImageCardViewWithoutDetailLabelAndDividerExample() {
 		let imageCardView: ImageCardView = ImageCardView()
+		imageCardView.pulseColor = MaterialColor.purple.base
 		imageCardView.divider = false
 		imageCardView.maxImageHeight = 130
 		
@@ -132,11 +130,8 @@ class ViewController: UIViewController {
 		// Add buttons to right side.
 		imageCardView.rightButtons = [btn1, btn2, btn3]
 		
-		// To support orientation changes, use MaterialLayout.
-		view.addSubview(imageCardView)
-		imageCardView.translatesAutoresizingMaskIntoConstraints = false
-		MaterialLayout.alignFromTop(view, child: imageCardView, top: 100)
-		MaterialLayout.alignToParentHorizontally(view, child: imageCardView, left: 20, right: 20)
+		// To support orientation changes, use Layout.
+		view.layout(imageCardView).top(100).left(20).right(20)
 	}
 }
 

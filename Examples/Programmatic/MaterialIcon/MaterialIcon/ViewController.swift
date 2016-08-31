@@ -29,7 +29,7 @@
 */
 
 /*
-The following is an example of setting a UITableView as the detailView for a
+The following is an example of setting a UITableView as the contentView for a
 CardView.
 */
 
@@ -75,8 +75,11 @@ class ViewController: UIViewController {
 		icons.append(Item(name: "clear", mdIcon: MaterialIcon.clear, cmIcon: MaterialIcon.cm.clear))
 		icons.append(Item(name: "close", mdIcon: MaterialIcon.close, cmIcon: MaterialIcon.cm.close))
         icons.append(Item(name: "edit", mdIcon: MaterialIcon.edit, cmIcon: MaterialIcon.cm.edit))
-        icons.append(Item(name: "history", mdIcon: MaterialIcon.history, cmIcon: nil))
-        icons.append(Item(name: "image", mdIcon: MaterialIcon.image, cmIcon: MaterialIcon.cm.image))
+		icons.append(Item(name: "favorite", mdIcon: MaterialIcon.favorite, cmIcon: nil))
+		icons.append(Item(name: "favoriteBorder", mdIcon: MaterialIcon.favoriteBorder, cmIcon: nil))
+		icons.append(Item(name: "history", mdIcon: MaterialIcon.history, cmIcon: nil))
+		icons.append(Item(name: "home", mdIcon: MaterialIcon.home, cmIcon: nil))
+		icons.append(Item(name: "image", mdIcon: MaterialIcon.image, cmIcon: MaterialIcon.cm.image))
         icons.append(Item(name: "menu", mdIcon: MaterialIcon.menu, cmIcon: MaterialIcon.cm.menu))
 		icons.append(Item(name: "microphone", mdIcon: nil, cmIcon: MaterialIcon.cm.microphone))
 		icons.append(Item(name: "moreVertical", mdIcon: MaterialIcon.moreHorizontal, cmIcon: MaterialIcon.cm.moreHorizontal))
@@ -106,14 +109,11 @@ class ViewController: UIViewController {
 	
 	/// Prepares the tableView.
 	private func prepareTableView() {
-		tableView.registerClass(MaterialTableViewCell.self, forCellReuseIdentifier: "Cell")
+        view.layout(tableView).edges(top: 20)
+        tableView.registerClass(MaterialTableViewCell.self, forCellReuseIdentifier: "Cell")
 		tableView.dataSource = self
         tableView.delegate = self
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(tableView)
-        
-        MaterialLayout.alignToParent(view, child: tableView, top: 20, left: 0, bottom: 0, right: 0)
 	}
     
     private func image(iconName:String!) -> UIImage? {

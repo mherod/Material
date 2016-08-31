@@ -14,7 +14,7 @@
          location = "group:Programmatic/MaterialIcon/MaterialIcon.xcodeproj">
       </FileRef>
       <FileRef
-         location = "group:Programmatic/MaterialLayout/MaterialLayout.xcodeproj">
+         location = "group:Programmatic/Layout/Layout.xcodeproj">
       </FileRef>
       <FileRef
          location = "group:Programmatic/Grid/Grid.xcodeproj">
@@ -56,13 +56,13 @@
          location = "group:Programmatic/MenuView/MenuView.xcodeproj">
       </FileRef>
       <FileRef
-         location = "group:Programmatic/MenuViewController/MenuViewController.xcodeproj">
+         location = "group:Programmatic/MenuController/MenuController.xcodeproj">
       </FileRef>
       <FileRef
-         location = "group:Programmatic/TabBar/TabBar.xcodeproj">
+         location = "group:Programmatic/ControlView/ControlView.xcodeproj">
       </FileRef>
       <FileRef
-         location = "group:Programmatic/NavigationBar/NavigationBar.xcodeproj">
+         location = "group:Programmatic/NavigationController/NavigationController.xcodeproj">
       </FileRef>
       <FileRef
          location = "group:Programmatic/Toolbar/Toolbar.xcodeproj">
@@ -77,16 +77,16 @@
          location = "group:Programmatic/SearchBarController/SearchBarController.xcodeproj">
       </FileRef>
       <FileRef
+         location = "group:Programmatic/TabBar/TabBar.xcodeproj">
+      </FileRef>
+      <FileRef
          location = "group:Programmatic/BottomTabBar/BottomTabBar.xcodeproj">
       </FileRef>
       <FileRef
          location = "group:Programmatic/BottomNavigationController/BottomNavigationController.xcodeproj">
       </FileRef>
       <FileRef
-         location = "group:Programmatic/SideNavigationController/SideNavigationController.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:Programmatic/ControlView/ControlView.xcodeproj">
+         location = "group:Programmatic/NavigationDrawerController/NavigationDrawerController.xcodeproj">
       </FileRef>
       <FileRef
          location = "group:Programmatic/CardView/CardView.xcodeproj">
@@ -124,12 +124,6 @@
       </FileRef>
       <FileRef
          location = "group:Storyboards/BottomTabBar/BottomTabBar.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:Storyboards/NavigationController/NavigationController.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:Storyboards/SideNavigationController/SideNavigationController.xcodeproj">
       </FileRef>
    </Group>
 </Workspace>

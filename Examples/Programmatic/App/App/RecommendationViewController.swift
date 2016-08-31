@@ -69,10 +69,8 @@ class RecommendationViewController: UIViewController {
 		tableView.dataSource = self
 		tableView.delegate = self
 		
-		// Use MaterialLayout to easily align the tableView.
-		view.addSubview(tableView)
-		tableView.translatesAutoresizingMaskIntoConstraints = false
-		MaterialLayout.alignToParent(view, child: tableView)
+		// Use Layout to easily align the tableView.
+		view.layout(tableView).edges()
 	}
 }
 
@@ -117,9 +115,7 @@ extension RecommendationViewController: UITableViewDataSource {
 		label.textColor = MaterialColor.grey.darken1
 		label.text = "Recommendations"
 		
-		header.addSubview(label)
-		label.translatesAutoresizingMaskIntoConstraints = false
-		MaterialLayout.alignToParent(header, child: label, left: 24)
+		header.layout(label).edges(left: 24)
 		
 		return header
 	}

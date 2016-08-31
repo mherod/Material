@@ -61,7 +61,7 @@ class ViewController: UIViewController {
 		let detailLabel: UILabel = UILabel()
 		detailLabel.text = "It’s been a while, have you read any new books lately?"
 		detailLabel.numberOfLines = 0
-		cardView.detailView = detailLabel
+		cardView.contentView = detailLabel
 		
 		// Yes button.
 		let btn1: FlatButton = FlatButton()
@@ -78,18 +78,14 @@ class ViewController: UIViewController {
 		// Add buttons to left side.
 		cardView.leftButtons = [btn1, btn2]
 		
-		// To support orientation changes, use MaterialLayout.
-		view.addSubview(cardView)
-		cardView.translatesAutoresizingMaskIntoConstraints = false
-		MaterialLayout.alignFromTop(view, child: cardView, top: 100)
-		MaterialLayout.alignToParentHorizontally(view, child: cardView, left: 20, right: 20)
+		// To support orientation changes, use Layout.
+        view.layout(cardView).top(100).left(20).right(20)
 	}
 	
 	private func prepareCardViewWithoutPulseBackgroundImageExample() {
 		let cardView: CardView = CardView()
 		cardView.divider = false
 		cardView.backgroundColor = MaterialColor.red.base
-		cardView.pulseColor = nil
 		
 		cardView.image = UIImage(named: "Material-iTunesArtWork")?.resize(toHeight: 75)
 		cardView.contentsGravityPreset = .BottomRight
@@ -106,7 +102,7 @@ class ViewController: UIViewController {
 		detailLabel.text = "Beautiful Material Design"
 		detailLabel.textColor = MaterialColor.white
 		detailLabel.numberOfLines = 0
-		cardView.detailView = detailLabel
+		cardView.contentView = detailLabel
 		
 		// Share button.
 		let img1: UIImage? = MaterialIcon.cm.share
@@ -119,11 +115,8 @@ class ViewController: UIViewController {
 		// Add buttons to left side.
 		cardView.leftButtons = [btn1]
 		
-		// To support orientation changes, use MaterialLayout.
-		view.addSubview(cardView)
-		cardView.translatesAutoresizingMaskIntoConstraints = false
-		MaterialLayout.alignFromTop(view, child: cardView, top: 100)
-		MaterialLayout.alignToParentHorizontally(view, child: cardView, left: 20, right: 20)
+		// To support orientation changes, use Layout.
+		view.layout(cardView).top(100).left(20).right(20)
 	}
 	
 	private func prepareCardViewWithPulseBackgroundImageExample() {
@@ -147,7 +140,7 @@ class ViewController: UIViewController {
 		detailLabel.text = "Data-Driven Framework"
 		detailLabel.textColor = MaterialColor.white
 		detailLabel.numberOfLines = 0
-		cardView.detailView = detailLabel
+		cardView.contentView = detailLabel
 		
 		// Share button.
 		let img1: UIImage? = MaterialIcon.cm.share
@@ -160,17 +153,13 @@ class ViewController: UIViewController {
 		// Add buttons to left side.
 		cardView.leftButtons = [btn1]
 		
-		// To support orientation changes, use MaterialLayout.
-		view.addSubview(cardView)
-		cardView.translatesAutoresizingMaskIntoConstraints = false
-		MaterialLayout.alignFromTop(view, child: cardView, top: 100)
-		MaterialLayout.alignToParentHorizontally(view, child: cardView, left: 20, right: 20)
+		// To support orientation changes, use Layout.
+		view.layout(cardView).top(100).left(20).right(20)
 	}
 	
 	private func prepareCardViewButtonBarExample() {
 		let cardView: CardView = CardView()
 		cardView.divider = false
-		cardView.pulseColor = nil
 		cardView.backgroundColor = MaterialColor.blueGrey.darken4
 		
 		// Search button.
@@ -201,11 +190,8 @@ class ViewController: UIViewController {
 		// Add buttons to right side.
 		cardView.rightButtons = [btn2, btn3]
 		
-		// To support orientation changes, use MaterialLayout.
-		view.addSubview(cardView)
-		cardView.translatesAutoresizingMaskIntoConstraints = false
-		MaterialLayout.alignFromTop(view, child: cardView, top: 100)
-		MaterialLayout.alignToParentHorizontally(view, child: cardView, left: 20, right: 20)
+		// To support orientation changes, use Layout.
+		view.layout(cardView).top(100).left(20).right(20)		
 	}
 }
 

@@ -45,8 +45,8 @@ class AppSearchBarController: SearchBarController {
 	
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
-		searchBar.statusBarStyle = .Default
-		sideNavigationController?.enabled = false
+		statusBarStyle = .Default
+		navigationDrawerController?.enabled = false
 	}
 	
 	override func viewDidAppear(animated: Bool) {
@@ -57,7 +57,7 @@ class AppSearchBarController: SearchBarController {
 	override func viewWillDisappear(animated: Bool) {
 		super.viewWillDisappear(animated)
 		searchBar.textField.resignFirstResponder()
-		sideNavigationController?.enabled = true
+		navigationDrawerController?.enabled = true
 	}
 	
 	/// Toggle SideSearchViewController left UIViewController.

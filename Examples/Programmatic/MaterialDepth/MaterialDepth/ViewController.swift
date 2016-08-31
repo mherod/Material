@@ -46,41 +46,31 @@ class ViewController: UIViewController {
 	/// Prepares the MaterialDepth.
 	private func prepareMaterialDepth() {
 		let v1: MaterialView = MaterialView()
-		v1.translatesAutoresizingMaskIntoConstraints = false
 		v1.depth = .Depth1
-		view.addSubview(v1)
 		
 		let v2: MaterialView = MaterialView()
-		v2.translatesAutoresizingMaskIntoConstraints = false
 		v2.depth = .Depth2
-		view.addSubview(v2)
 		
 		let v3: MaterialView = MaterialView()
-		v3.translatesAutoresizingMaskIntoConstraints = false
 		v3.depth = .Depth3
-		view.addSubview(v3)
 		
 		let v4: MaterialView = MaterialView()
-		v4.translatesAutoresizingMaskIntoConstraints = false
 		v4.depth = .Depth4
-		view.addSubview(v4)
 		
 		let v5: MaterialView = MaterialView()
-		v5.translatesAutoresizingMaskIntoConstraints = false
 		v5.depth = .Depth5
-		view.addSubview(v5)
 		
 		let children: Array<UIView> = [v1, v2, v3, v4, v5]
 		
 		// Align the vs vertically with an equal height.
-		MaterialLayout.alignToParentVertically(view, children: children, top: 100, bottom: 100, spacing: 20)
+		view.layout.vertically(children, top: 100, bottom: 100, spacing: 20)
 		
 		/*
 		Individually set the vs' horizontal alignment.
 		If this is left out, the intrinsic value is used for the view.
 		*/
 		for v in children {
-			MaterialLayout.alignToParentHorizontally(view, child: v, left: 20, right: 20)
+			view.layout(v).horizontally(left: 20, right: 20)
 		}
 	}
 }

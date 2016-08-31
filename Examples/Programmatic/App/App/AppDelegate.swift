@@ -37,23 +37,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 	
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-		
-		let navigationController: AppNavigationController = AppNavigationController(rootViewController: RecipesViewController())
-		
-		let menuViewController: AppMenuViewController = AppMenuViewController(rootViewController: navigationController)
-		menuViewController.edgesForExtendedLayout = .None
-		
-		let bottomNavigationController: BottomNavigationController = BottomNavigationController()
-		bottomNavigationController.viewControllers = [menuViewController, VideoViewController(), PhotoViewController()]
-		bottomNavigationController.selectedIndex = 0
-		bottomNavigationController.tabBar.tintColor = MaterialColor.white
-		bottomNavigationController.tabBar.backgroundColor = MaterialColor.grey.darken4
-		
-		let sideNavigationController: SideNavigationController = SideNavigationController(rootViewController: bottomNavigationController, leftViewController: AppLeftViewController())
-		sideNavigationController.statusBarStyle = .LightContent
+		let bottomNavigationController: AppBottomNavigationController = AppBottomNavigationController()
+		let navigationController: AppNavigationController = AppNavigationController(rootViewController: bottomNavigationController)
+		let menuController: AppMenuController = AppMenuController(rootViewController: navigationController)
+        let statusBarController: StatusBarController = StatusBarController(rootViewController: menuController)
+		let navigationDrawerController: AppNavigationDrawerController = AppNavigationDrawerController(rootViewController: statusBarController, leftViewController: AppLeftViewController())
 		
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
-		window!.rootViewController = sideNavigationController
+		window!.rootViewController = navigationDrawerController
 		window!.makeKeyAndVisible()
 		return true
 	}

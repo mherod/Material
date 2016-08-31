@@ -38,12 +38,16 @@ import UIKit
 import Material
 
 class ViewController: UIViewController {
+	/// Reference for containerView.
+	private var containerView: UIView!
+	
 	/// Reference for Toolbar.
 	private var toolbar: Toolbar!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		prepareView()
+		prepareContainerView()
 		prepareToolbar()
 	}
 	
@@ -52,24 +56,25 @@ class ViewController: UIViewController {
 		view.backgroundColor = MaterialColor.white
 	}
 	
+	/// Prepares the containerView.
+	private func prepareContainerView() {
+		containerView = UIView()
+		view.layout(containerView).edges(top: 100, left: 20, right: 20)
+	}
+	
 	/// Prepares the toolbar
 	private func prepareToolbar() {
 		toolbar = Toolbar()
+		containerView.addSubview(toolbar)
 		
 		// Title label.
-		let titleLabel: UILabel = UILabel()
-		titleLabel.text = "Material"
-		titleLabel.textAlignment = .Left
-		titleLabel.textColor = MaterialColor.white
-		titleLabel.font = RobotoFont.regular
+		toolbar.title = "Material"
+		toolbar.titleLabel.textColor = MaterialColor.white
 		
 		// Detail label.
-		let detailLabel: UILabel = UILabel()
-		detailLabel.text = "Build Beautiful Software"
-		detailLabel.textAlignment = .Left
-		detailLabel.textColor = MaterialColor.white
-		detailLabel.font = RobotoFont.regular
-		
+		toolbar.detail = "Build Beautiful Software"
+		toolbar.detailLabel.textColor = MaterialColor.white
+
 		var image: UIImage? = MaterialIcon.cm.menu
 
 		// Menu button.
@@ -95,13 +100,8 @@ class ViewController: UIViewController {
 		"View controller-based status bar appearance = NO"
 		to your info.plist file and set the following property.
 		*/
-		toolbar.statusBarStyle = .LightContent
 		toolbar.backgroundColor = MaterialColor.blue.base
-		toolbar.titleLabel = titleLabel
-		toolbar.detailLabel = detailLabel
 		toolbar.leftControls = [menuButton]
 		toolbar.rightControls = [switchControl, searchButton]
-		
-		view.addSubview(toolbar)
 	}
 }

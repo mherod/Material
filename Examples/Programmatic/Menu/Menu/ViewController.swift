@@ -128,7 +128,6 @@ class ViewController: UIViewController {
 	private func prepareFabMenuExample() {
 		var image: UIImage? = UIImage(named: "ic_add_white")
 		let btn1: FabButton = FabButton()
-		btn1.pulseColor = nil
 		btn1.setImage(image, forState: .Normal)
 		btn1.setImage(image, forState: .Highlighted)
 		btn1.addTarget(self, action: #selector(handleFabMenu), forControlEvents: .TouchUpInside)
@@ -158,7 +157,7 @@ class ViewController: UIViewController {
 		// Initialize the menu and setup the configuration options.
 		fabMenu = Menu(origin: CGPointMake(view.bounds.width - diameter - spacing, view.bounds.height - diameter - spacing))
 		fabMenu.direction = .Up
-		fabMenu.baseViewSize = CGSizeMake(diameter, diameter)
+		fabMenu.baseSize = CGSizeMake(diameter, diameter)
 		fabMenu.views = [btn1, btn2, btn3, btn4]
 	}
 	
@@ -200,7 +199,7 @@ class ViewController: UIViewController {
 		flatMenu = Menu(origin: CGPointMake(spacing, view.bounds.height - height - spacing))
 		flatMenu.direction = .Up
 		flatMenu.spacing = 8
-		flatMenu.itemViewSize = CGSizeMake(120, height)
+		flatMenu.itemSize = CGSizeMake(120, height)
 		flatMenu.views = [btn1, btn2, btn3, btn4]
 	}
 	
@@ -234,7 +233,7 @@ class ViewController: UIViewController {
 		// Initialize the menu and setup the configuration options.
 		flashMenu = Menu(origin: CGPointMake((view.bounds.width + btn1.width) / 2, 100))
 		flashMenu.direction = .Left
-		flashMenu.itemViewSize = btn1.intrinsicContentSize()
+		flashMenu.itemSize = btn1.intrinsicContentSize()
 		flashMenu.views = [btn1, btn2, btn3]
 	}
 }

@@ -65,15 +65,12 @@ class ViewController: UIViewController, TextFieldDelegate {
 	/// Prepares the resign responder button.
 	private func prepareResignResponderButton() {
 		let btn: RaisedButton = RaisedButton()
-		btn.translatesAutoresizingMaskIntoConstraints = false
 		btn.addTarget(self, action: #selector(handleResignResponderButton), forControlEvents: .TouchUpInside)
 		btn.setTitle("Resign", forState: .Normal)
 		btn.setTitleColor(MaterialColor.blue.base, forState: .Normal)
 		btn.setTitleColor(MaterialColor.blue.base, forState: .Highlighted)
-		view.addSubview(btn)
 		
-		MaterialLayout.alignFromBottomRight(view, child: btn, bottom: 24, right: 24)
-		MaterialLayout.size(view, child: btn, width: 100, height: 50)
+		view.layout(btn).width(100).height(50).bottom(24).right(24)
 	}
 	
 	/// Handle the resign responder button.
@@ -93,14 +90,9 @@ class ViewController: UIViewController, TextFieldDelegate {
 		nameField.textAlignment = .Center
 		nameField.clearButtonMode = .WhileEditing
 		
-		// The translatesAutoresizingMaskIntoConstraints property must be set to enable AutoLayout correctly.
-		nameField.translatesAutoresizingMaskIntoConstraints = false
-		view.addSubview(nameField)
-		
 		// Size the TextField to the maximum width, less 40 pixels on either side
 		// with a top margin of 40 pixels.
-		MaterialLayout.alignFromTop(view, child: nameField, top: 40)
-		MaterialLayout.alignToParentHorizontally(view, child: nameField, left: 40, right: 40)
+		view.layout(nameField).top(40).horizontally(left: 40, right: 40)
 	}
 	
 	/// Prepares the email TextField.
@@ -109,7 +101,7 @@ class ViewController: UIViewController, TextFieldDelegate {
 		emailField.placeholder = "Email"
 		emailField.detail = "Error, incorrect email"
 		emailField.enableClearIconButton = true
-		emailField.delegate = self
+		emailField.delegate = self 
 		
 		emailField.placeholderColor = MaterialColor.amber.darken4
 		emailField.placeholderActiveColor = MaterialColor.pink.base
@@ -129,14 +121,9 @@ class ViewController: UIViewController, TextFieldDelegate {
 		// Setting the visibilityFlatButton color.
 		passwordField.visibilityIconButton?.tintColor = MaterialColor.green.base.colorWithAlphaComponent(passwordField.secureTextEntry ? 0.38 : 0.54)
 		
-		// The translatesAutoresizingMaskIntoConstraints property must be set to enable AutoLayout correctly.
-		passwordField.translatesAutoresizingMaskIntoConstraints = false
-		view.addSubview(passwordField)
-		
 		// Size the TextField to the maximum width, less 40 pixels on either side
 		// with a top margin of 200 pixels.
-		MaterialLayout.alignFromTop(view, child: passwordField, top: 200)
-		MaterialLayout.alignToParentHorizontally(view, child: passwordField, left: 40, right: 40)
+		view.layout(passwordField).top(200).horizontally(left: 40, right: 40)		
 	}
 	
 	/// Executed when the 'return' key is pressed when using the emailField.

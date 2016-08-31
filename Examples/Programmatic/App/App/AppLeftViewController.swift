@@ -30,7 +30,7 @@
 
 /*
 The following is an example of setting a UITableView as the LeftViewController
-within a SideNavigationController.
+within a NavigationDrawerController.
 */
 
 import UIKit
@@ -90,22 +90,14 @@ class AppLeftViewController: UIViewController {
 		profileView.shape = .Circle
 		profileView.borderColor = MaterialColor.white
 		profileView.borderWidth = 3
-		view.addSubview(profileView)
 		
 		let nameLabel: UILabel = UILabel()
 		nameLabel.text = "Michael Smith"
 		nameLabel.textColor = MaterialColor.white
 		nameLabel.font = RobotoFont.mediumWithSize(18)
-		view.addSubview(nameLabel)
 		
-		profileView.translatesAutoresizingMaskIntoConstraints = false
-		
-		MaterialLayout.alignFromTopLeft(view, child: profileView, top: 30, left: (view.bounds.width - 72) / 2)
-		MaterialLayout.size(view, child: profileView, width: 72, height: 72)
-		
-		nameLabel.translatesAutoresizingMaskIntoConstraints = false
-		MaterialLayout.alignFromTop(view, child: nameLabel, top: 130)
-		MaterialLayout.alignToParentHorizontally(view, child: nameLabel, left: 20, right: 20)
+		view.layout(profileView).width(72).height(72).top(30).centerHorizontally()
+        view.layout(nameLabel).top(130).left(20).right(20)
 	}
 	
 	/// Prepares the tableView.
@@ -116,10 +108,8 @@ class AppLeftViewController: UIViewController {
 		tableView.delegate = self
 		tableView.separatorStyle = .None
 		
-		// Use MaterialLayout to easily align the tableView.
-		view.addSubview(tableView)
-		tableView.translatesAutoresizingMaskIntoConstraints = false
-		MaterialLayout.alignToParent(view, child: tableView, top: 170)
+		// Use Layout to easily align the tableView.
+        view.layout(tableView).edges(top: 170)
 	}
 }
 

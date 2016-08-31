@@ -49,22 +49,14 @@ class ViewController: UIViewController {
     }
 	
 	/// Adjusts the Toolbar height to the correct height based on the orientation value.
-	private func adjustToOrientation(toInterfaceOrientation: UIInterfaceOrientation) {
-		// If landscape.
-		if UIInterfaceOrientationIsLandscape(toInterfaceOrientation) {
-			/**
-			The height of the Toolbar is dependant on the device being used.
-			If the device is an iPad, the height should stay the same as in Portrait
-			view, otherwise it should strink to the Landscape height for iPhone.
-			*/
-			toolbarHeightConstraint?.constant = .iPad == MaterialDevice.type ? toolbar!.heightForPortraitOrientation :  toolbar!.heightForLandscapeOrientation
-		} else {
-			toolbarHeightConstraint?.constant = toolbar!.heightForPortraitOrientation
-		}
+	private func adjustToOrientation(interfaceOrientation: UIInterfaceOrientation) {
+		toolbar.grid.layoutInset.top = .iPad == MaterialDevice.type || UIInterfaceOrientationIsPortrait(interfaceOrientation) ? 20 : 0
+		toolbarHeightConstraint?.constant = toolbar.intrinsicContentSize().height + toolbar.grid.layoutInset.top
 	}
 	
 	/// General preparation statements.
     private func prepareView() {
+		MaterialDevice.statusBarStyle = .LightContent
 		view.backgroundColor = MaterialColor.white
     }
 	
@@ -73,25 +65,13 @@ class ViewController: UIViewController {
 		// Stylize.
         toolbar.backgroundColor = MaterialColor.indigo.darken1
 		
-        // To lighten the status bar add the "View controller-based status bar appearance = NO"
-        // to your info.plist file and set the following property.
-        toolbar.statusBarStyle = .LightContent
-        
         // Title label.
-        let titleLabel: UILabel = UILabel()
-        titleLabel.text = "Material"
-        titleLabel.textAlignment = .Left
-        titleLabel.textColor = MaterialColor.white
-        titleLabel.font = RobotoFont.regular
-        toolbar.titleLabel = titleLabel
+        toolbar.title = "Material"
+        toolbar.titleLabel.textColor = MaterialColor.white
 		
         // Detail label.
-        let detailLabel: UILabel = UILabel()
-        detailLabel.text = "Build Beautiful Software"
-        detailLabel.textAlignment = .Left
-        detailLabel.textColor = MaterialColor.white
-        detailLabel.font = RobotoFont.regular
-        toolbar.detailLabel = detailLabel
+        toolbar.detail = "Build Beautiful Software"
+		toolbar.detailLabel.textColor = MaterialColor.white
 		
         // Menu button.
         let img1: UIImage? = MaterialIcon.cm.menu
