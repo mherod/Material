@@ -783,7 +783,7 @@ public class CaptureSession : NSObject, AVCaptureFileOutputRecordingDelegate {
 		}
 		
 		// Draw the underlying CGImage with the calculated transform.
-		guard let context = CGBitmapContextCreate(nil, Int(image.size.width), Int(image.size.height), CGImageGetBitsPerComponent(image.CGImage), 0, CGImageGetColorSpace(image.CGImage), CGImageGetBitmapInfo(image.CGImage).rawValue) else {
+		guard let context = CGBitmapContextCreate(nil, Int(image.size.width), Int(image.size.height), CGImageGetBitsPerComponent(image.CGImage!), 0, CGImageGetColorSpace(image.CGImage!)!, CGImageGetBitmapInfo(image.CGImage!).rawValue) else {
 			return nil
 		}
 		
@@ -791,9 +791,9 @@ public class CaptureSession : NSObject, AVCaptureFileOutputRecordingDelegate {
 		
 		switch image.imageOrientation {
 		case .Left, .LeftMirrored, .Right, .RightMirrored:
-			CGContextDrawImage(context, CGRect(x: 0, y: 0, width: image.size.height, height: image.size.width), image.CGImage)
+			CGContextDrawImage(context, CGRect(x: 0, y: 0, width: image.size.height, height: image.size.width), image.CGImage!)
 		default:
-			CGContextDrawImage(context, CGRect(origin: .zero, size: image.size), image.CGImage)
+			CGContextDrawImage(context, CGRect(origin: .zero, size: image.size), image.CGImage!)
 		}
 		
 		guard let CGImage = CGBitmapContextCreateImage(context) else {
