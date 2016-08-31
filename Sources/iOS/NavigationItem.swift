@@ -1,146 +1,174 @@
 /*
-* Copyright (C) 2015 - 2016, Daniel Dahan and CosmicMind, Inc. <http://cosmicmind.io>.
-* All rights reserved.
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are met:
-*
-*	*	Redistributions of source code must retain the above copyright notice, this
-*		list of conditions and the following disclaimer.
-*
-*	*	Redistributions in binary form must reproduce the above copyright notice,
-*		this list of conditions and the following disclaimer in the documentation
-*		and/or other materials provided with the distribution.
-*
-*	*	Neither the name of Material nor the names of its
-*		contributors may be used to endorse or promote products derived from
-*		this software without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2015 - 2016, Daniel Dahan and CosmicMind, Inc. <http://cosmicmind.io>.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *	*	Redistributions of source code must retain the above copyright notice, this
+ *		list of conditions and the following disclaimer.
+ *
+ *	*	Redistributions in binary form must reproduce the above copyright notice,
+ *		this list of conditions and the following disclaimer in the documentation
+ *		and/or other materials provided with the distribution.
+ *
+ *	*	Neither the name of CosmicMind nor the names of its
+ *		contributors may be used to endorse or promote products derived from
+ *		this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 import UIKit
 
 /// A memory reference to the NavigationItem instance.
-private var MaterialAssociatedObjectNavigationItemKey: UInt8 = 0
+private var NavigationItemKey: UInt8 = 0
 
-public class MaterialAssociatedObjectNavigationItem {
-	/// Portrait inset.
-	public var portraitInset: CGFloat
+public class NavigationItem {
+	/**
+	A boolean indicating whether keys are being observed
+	on the UINavigationItem.
+	*/
+	internal var observed = false
 	
-	/// Landscape inset.
-	public var landscapeInset: CGFloat
+	/// Back Button.
+	public var backButton: IconButton?
 	
-	/// Detail View.
-	public var detailView: UIView?
+	/// Content View.
+	public var contentView: UIView?
 	
 	/// Title label.
-	public var titleLabel: UILabel?
+	public private(set) var titleLabel: UILabel!
 	
 	/// Detail label.
-	public var detailLabel: UILabel?
+	public private(set) var detailLabel: UILabel!
 	
 	/// Left controls.
-	public var leftControls: Array<UIControl>?
+	public var leftControls = [UIView]()
 	
 	/// Right controls.
-	public var rightControls: Array<UIControl>?
+	public var rightControls = [UIView]()
 	
-	public init(portraitInset: CGFloat, landscapeInset: CGFloat) {
-		self.portraitInset = portraitInset
-		self.landscapeInset = landscapeInset
+	/// Initializer.
+	public init() {
+		prepareTitleLabel()
+		prepareDetailLabel()
+	}
+    
+    /// Reloads the subviews for the NavigationBar.
+    internal func reload() {
+        guard let navigationBar = contentView?.superview?.superview as? NavigationBar else {
+            return
+        }
+        navigationBar.layoutSubviews()
+    }
+	
+	/// Prepares the titleLabel.
+	private func prepareTitleLabel() {
+		titleLabel = UILabel()
+		titleLabel.font = RobotoFont.medium(with: 17)
+		titleLabel.textAlignment = .center
+	}
+	
+	/// Prepares the detailLabel.
+	private func prepareDetailLabel() {
+		detailLabel = UILabel()
+		detailLabel.font = RobotoFont.regular(with: 12)
+		detailLabel.textAlignment = .center
 	}
 }
 
-public extension UINavigationItem {
+extension UINavigationItem {
 	/// NavigationItem reference.
-	public internal(set) var item: MaterialAssociatedObjectNavigationItem {
+	public internal(set) var navigationItem: NavigationItem {
 		get {
-			return MaterialAssociatedObject(self, key: &MaterialAssociatedObjectNavigationItemKey) {
-				return MaterialAssociatedObjectNavigationItem(portraitInset: .iPad == MaterialDevice.type || "iPhone 6s Plus" == MaterialDevice.model || "iPhone 6 Plus" == MaterialDevice.model ? -20 : -16, landscapeInset: -20)
+			return AssociatedObject(base: self, key: &NavigationItemKey) {
+				return NavigationItem()
 			}
 		}
 		set(value) {
-			MaterialAssociateObject(self, key: &MaterialAssociatedObjectNavigationItemKey, value: value)
+			AssociateObject(base: self, key: &NavigationItemKey, value: value)
 		}
 	}
 	
-	/// Portrait inset.
-	public var portraitInset: CGFloat {
+	/// Back Button.
+	public internal(set) var backButton: IconButton? {
 		get {
-			return item.portraitInset
+			return navigationItem.backButton
 		}
 		set(value) {
-			item.portraitInset = value
+			navigationItem.backButton = value
 		}
 	}
 	
-	/// Landscape inset.
-	public var landscapeInset: CGFloat {
+	/// Content View.
+	public internal(set) var contentView: UIView? {
 		get {
-			return item.landscapeInset
+			return navigationItem.contentView
 		}
 		set(value) {
-			item.landscapeInset = value
+			navigationItem.contentView = value
 		}
 	}
 	
-	/// Detail View.
-	public var detailView: UIView? {
+	@nonobjc
+	public var title: String? {
 		get {
-			return item.detailView
+			return titleLabel.text
 		}
 		set(value) {
-			item.detailView = value
+			titleLabel.text = value
+            navigationItem.reload()
 		}
 	}
 	
 	/// Title Label.
-	public var titleLabel: UILabel? {
+	public var titleLabel: UILabel {
+		return navigationItem.titleLabel
+	}
+	
+	/// Detail text.
+	public var detail: String? {
 		get {
-			return item.titleLabel
+			return detailLabel.text
 		}
 		set(value) {
-			item.titleLabel = value
+			detailLabel.text = value
+            navigationItem.reload()
 		}
 	}
 	
 	/// Detail Label.
-	public var detailLabel: UILabel? {
+	public var detailLabel: UILabel {
+		return navigationItem.detailLabel
+	}
+	
+	/// Left side UIViews.
+	public var leftControls: [UIView] {
 		get {
-			return item.detailLabel
+			return navigationItem.leftControls
 		}
 		set(value) {
-			item.detailLabel = value
+			navigationItem.leftControls = value
 		}
 	}
 	
-	/// Left side UIControls.
-	public var leftControls: Array<UIControl>? {
+	/// Right side UIViews.
+	public var rightControls: [UIView] {
 		get {
-			return item.leftControls
+			return navigationItem.rightControls
 		}
 		set(value) {
-			item.leftControls = value
-		}
-	}
-	
-	/// Right side UIControls.
-	public var rightControls: Array<UIControl>? {
-		get {
-			return item.rightControls
-		}
-		set(value) {
-			item.rightControls = value
+			navigationItem.rightControls = value
 		}
 	}
 }

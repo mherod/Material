@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
   s.name = 'Material'
-  s.version = '1.40.1'
-  s.license = 'BSD'
+  s.version = '2.0.0'
+  s.license = 'BSD-3-Clause'
   s.summary = 'An animation and graphics framework for Material Design in Swift.'
   s.homepage = 'http://cosmicmind.io'
-  s.social_media_url = 'https://www.facebook.com/graphkit'
+  s.social_media_url = 'https://www.facebook.com/cosmicmindio'
   s.authors = { 'CosmicMind, Inc.' => 'support@cosmicmind.io' }
   s.source = { :git => 'https://github.com/CosmicMind/Material.git', :tag => s.version }
   s.ios.deployment_target = '8.0'
@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.osx.source_files = 'Sources/OSX/**/*.swift'
   s.requires_arc = true
   s.resource_bundles = {
-      'io.cosmicmind.material.fonts' => ['Sources/**/*.ttf'],
-      'io.cosmicmind.material.icons' => ['Sources/Assets.xcassets/**/*.png']
+      'io.cosmicmind.material.icons' => ['Sources/**/*.xcassets'],
+	  'io.cosmicmind.material.fonts' => ['Sources/**/*.ttf']
   }
 end
