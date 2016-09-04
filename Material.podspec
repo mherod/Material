@@ -16,4 +16,5 @@ Pod::Spec.new do |s|
     'io.cosmicmind.material.icons' => ['Sources/**/*.xcassets'],
     'io.cosmicmind.material.fonts' => ['Sources/**/*.ttf']
   }
+  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '3.0' }
 end
