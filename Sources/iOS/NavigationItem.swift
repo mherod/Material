@@ -43,7 +43,7 @@ public class NavigationItem: NSObject {
     }
     
 	/// Back Button.
-	public var backButton: IconButton?
+	public private(set) lazy var backButton: IconButton = IconButton()
 	
 	/// Content View.
     public private(set) lazy var contentView = UIView()
@@ -54,15 +54,15 @@ public class NavigationItem: NSObject {
 	/// Detail label.
 	public private(set) lazy var detailLabel = UILabel()
 	
-	/// Left controls.
-    public var leftControls = [UIView]() {
+	/// Left items.
+    public var leftViews = [UIView]() {
         didSet {
             navigationBar?.layoutSubviews()
         }
     }
 	
-	/// Right controls.
-    public var rightControls = [UIView]() {
+	/// Right items.
+    public var rightViews = [UIView]() {
         didSet {
             navigationBar?.layoutSubviews()
         }
@@ -97,16 +97,20 @@ public class NavigationItem: NSObject {
     }
 	
 	/// Prepares the titleLabel.
-	private func prepareTitleLabel() {
-		titleLabel.font = RobotoFont.medium(with: 17)
-		titleLabel.textAlignment = .center
+    private func prepareTitleLabel() {
+        titleLabel.textAlignment = .center
+		titleLabel.contentScaleFactor = Device.scale
+        titleLabel.font = RobotoFont.medium(with: 17)
+        titleLabel.textColor = Color.darkText.primary
         addObserver(self, forKeyPath: "titleLabel.textAlignment", options: [], context: &NavigationItemContext)
 	}
 	
 	/// Prepares the detailLabel.
-	private func prepareDetailLabel() {
+    private func prepareDetailLabel() {
+        detailLabel.textAlignment = .center
+        titleLabel.contentScaleFactor = Device.scale
 		detailLabel.font = RobotoFont.regular(with: 12)
-		detailLabel.textAlignment = .center
+		detailLabel.textColor = Color.darkText.secondary
 	}
 }
 
@@ -134,15 +138,11 @@ extension UINavigationItem {
     }
     
 	/// Back Button.
-	public internal(set) var backButton: IconButton? {
-		get {
-			return navigationItem.backButton
-		}
-		set(value) {
-			navigationItem.backButton = value
-		}
+	public var backButton: IconButton {
+		return navigationItem.backButton
 	}
 	
+    /// Title text.
 	@nonobjc
 	public var title: String? {
 		get {
@@ -153,7 +153,7 @@ extension UINavigationItem {
             navigationItem.reload()
 		}
 	}
-	
+    
 	/// Title Label.
 	public var titleLabel: UILabel {
 		return navigationItem.titleLabel
@@ -176,22 +176,22 @@ extension UINavigationItem {
 	}
 	
 	/// Left side UIViews.
-	public var leftControls: [UIView] {
+	public var leftViews: [UIView] {
 		get {
-			return navigationItem.leftControls
+			return navigationItem.leftViews
 		}
 		set(value) {
-			navigationItem.leftControls = value
+			navigationItem.leftViews = value
 		}
 	}
 	
 	/// Right side UIViews.
-	public var rightControls: [UIView] {
+	public var rightViews: [UIView] {
 		get {
-			return navigationItem.rightControls
+			return navigationItem.rightViews
 		}
 		set(value) {
-			navigationItem.rightControls = value
+			navigationItem.rightViews = value
 		}
 	}
 }

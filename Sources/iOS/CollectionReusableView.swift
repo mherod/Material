@@ -30,35 +30,27 @@
 
 import UIKit
 
-@IBDesignable
-@objc(MaterialCollectionReusableView)
-open class MaterialCollectionReusableView: UICollectionReusableView {
+@objc(CollectionReusableView)
+open class CollectionReusableView: UICollectionReusableView {
 	/**
      A CAShapeLayer used to manage elements that would be affected by
      the clipToBounds property of the backing layer. For example, this
      allows the dropshadow effect on the backing layer, while clipping
      the image to a desired shape within the visualLayer.
      */
-	open private(set) var visualLayer: CAShapeLayer!
+	open private(set) lazy var visualLayer = CAShapeLayer()
 	
-	/// An Array of pulse layers.
-	open private(set) lazy var pulseLayers = [CAShapeLayer]()
-	
-	/// The opcaity value for the pulse animation.
-	@IBInspectable open var pulseOpacity: CGFloat = 0.25
-	
-	/// The color of the pulse effect.
-	@IBInspectable open var pulseColor = Color.grey.base
-	
-	/// The type of PulseAnimation.
-	open var pulseAnimation = PulseAnimation.pointWithBacking
+    /// A Pulse reference.
+    @IBInspectable
+    open internal(set) lazy var pulse: Pulse = Pulse()
 	
 	/**
      A property that manages an image for the visualLayer's contents
      property. Images should not be set to the backing layer's contents
      property to avoid conflicts when using clipsToBounds.
      */
-	@IBInspectable open var image: UIImage? {
+	@IBInspectable
+    open var image: UIImage? {
 		didSet {
 			visualLayer.contents = image?.cgImage
 		}
@@ -174,7 +166,7 @@ open class MaterialCollectionReusableView: UICollectionReusableView {
 	public required init?(coder aDecoder: NSCoder) {
 		contentsGravityPreset = .ResizeAspectFill
 		super.init(coder: aDecoder)
-		prepareView()
+		prepare()
 	}
 	
 	/**
@@ -186,7 +178,7 @@ open class MaterialCollectionReusableView: UICollectionReusableView {
 	public override init(frame: CGRect) {
 		contentsGravityPreset = .ResizeAspectFill
 		super.init(frame: frame)
-		prepareView()
+		prepare()
 	}
 	
 	/// A convenience initializer.
@@ -214,12 +206,12 @@ open class MaterialCollectionReusableView: UICollectionReusableView {
      */
     open func pulse(point: CGPoint? = nil) {
         let p: CGPoint = nil == point ? CGPoint(x: CGFloat(width / 2), y: CGFloat(height / 2)) : point!
-        Animation.pulseExpandAnimation(layer: layer, visualLayer: visualLayer, pulseColor: pulseColor, pulseOpacity: pulseOpacity, point: p, width: width, height: height, pulseLayers: &pulseLayers, pulseAnimation: pulseAnimation)
-        _ = Animation.delay(time: 0.35) { [weak self] in
+        Animation.pulseExpandAnimation(layer: layer, visualLayer: visualLayer, point: p, width: width, height: height, pulse: &pulse)
+        Animation.delay(time: 0.35) { [weak self] in
             guard let s = self else {
                 return
             }
-            Animation.pulseContractAnimation(layer: s.layer, visualLayer: s.visualLayer, pulseColor: s.pulseColor, pulseLayers: &s.pulseLayers, pulseAnimation: s.pulseAnimation)
+            Animation.pulseContractAnimation(layer: s.layer, visualLayer: s.visualLayer, pulse: &s.pulse)
         }
     }
     
@@ -231,7 +223,7 @@ open class MaterialCollectionReusableView: UICollectionReusableView {
      */
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        Animation.pulseExpandAnimation(layer: layer, visualLayer: visualLayer, pulseColor: pulseColor, pulseOpacity: pulseOpacity, point: layer.convert(touches.first!.location(in: self), from: layer), width: width, height: height, pulseLayers: &pulseLayers, pulseAnimation: pulseAnimation)
+        Animation.pulseExpandAnimation(layer: layer, visualLayer: visualLayer, point: layer.convert(touches.first!.location(in: self), from: layer), width: width, height: height, pulse: &pulse)
     }
     
     /**
@@ -242,7 +234,7 @@ open class MaterialCollectionReusableView: UICollectionReusableView {
      */
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-        Animation.pulseContractAnimation(layer: layer, visualLayer: visualLayer, pulseColor: pulseColor, pulseLayers: &pulseLayers, pulseAnimation: pulseAnimation)
+        Animation.pulseContractAnimation(layer: layer, visualLayer: visualLayer, pulse: &pulse)
     }
     
     /**
@@ -253,25 +245,24 @@ open class MaterialCollectionReusableView: UICollectionReusableView {
      */
     open override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
-        Animation.pulseContractAnimation(layer: layer, visualLayer: visualLayer, pulseColor: pulseColor, pulseLayers: &pulseLayers, pulseAnimation: pulseAnimation)
+        Animation.pulseContractAnimation(layer: layer, visualLayer: visualLayer, pulse: &pulse)
     }
 	
 	/**
 	Prepares the view instance when intialized. When subclassing,
-	it is recommended to override the prepareView method
+	it is recommended to override the prepare method
 	to initialize property values and other setup operations.
-	The super.prepareView method should always be called immediately
+	The super.prepare method should always be called immediately
 	when subclassing.
 	*/
-	open func prepareView() {
+	open func prepare() {
 		contentScaleFactor = Device.scale
-		pulseAnimation = .none
+		pulse.animation = .none
 		prepareVisualLayer()
 	}
 	
 	/// Prepares the visualLayer property.
 	internal func prepareVisualLayer() {
-        visualLayer = CAShapeLayer()
 		visualLayer.zPosition = 0
 		visualLayer.masksToBounds = true
 		layer.addSublayer(visualLayer)

@@ -37,7 +37,6 @@ extension UITabBarItem {
 	}
 }
 
-@IBDesignable
 open class BottomTabBar: UITabBar {
     /// Automatically aligns the BottomNavigationBar to the superview.
 	open var isAlignedToParentAutomatically = true
@@ -58,7 +57,7 @@ open class BottomTabBar: UITabBar {
 	*/
 	public override init(frame: CGRect) {
 		super.init(frame: frame)
-		prepareView()
+		prepare()
 	}
 	
 	/// A convenience initializer.
@@ -68,7 +67,7 @@ open class BottomTabBar: UITabBar {
     
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        prepareView()
+        prepare()
     }
 	
     open override func layoutSublayers(of layer: CALayer) {
@@ -110,19 +109,19 @@ open class BottomTabBar: UITabBar {
 		super.didMoveToSuperview()
 		if isAlignedToParentAutomatically {
 			if let v = superview {
-				_ = v.layout(self).bottom().horizontally()
+				v.layout(self).bottom().horizontally()
 			}
 		}
 	}
 	
 	/**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepareView method
+     it is recommended to override the prepare method
      to initialize property values and other setup operations.
-     The super.prepareView method should always be called immediately
+     The super.prepare method should always be called immediately
      when subclassing.
      */
-	public func prepareView() {
+	public func prepare() {
 		depthPreset = .depth1
         divider.alignment = .top
 		contentScaleFactor = Device.scale
