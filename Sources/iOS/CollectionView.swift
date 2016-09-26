@@ -30,23 +30,24 @@
 
 import UIKit
 
+@IBDesignable
 open class CollectionView: UICollectionView {
-    /// A preset wrapper around contentInset.
+	/// A preset wrapper around contentInset.
 	open var contentEdgeInsetsPreset: EdgeInsets {
 		get {
-			return (collectionViewLayout as? CollectionViewLayout)!.contentEdgeInsets
+			return (collectionViewLayout as? CollectionViewLayout)!.contentInset
 		}
 		set(value) {
-			(collectionViewLayout as? CollectionViewLayout)!.contentEdgeInsets = value
+			(collectionViewLayout as? CollectionViewLayout)!.contentInset = value
 		}
 	}
 	
 	open override var contentInset: UIEdgeInsets {
 		get {
-			return (collectionViewLayout as? CollectionViewLayout)!.contentEdgeInsets
+			return (collectionViewLayout as? CollectionViewLayout)!.contentInset
 		}
 		set(value) {
-			(collectionViewLayout as? CollectionViewLayout)!.contentEdgeInsets = value
+			(collectionViewLayout as? CollectionViewLayout)!.contentInset = value
 		}
 	}
 	
@@ -83,7 +84,7 @@ open class CollectionView: UICollectionView {
      */
 	public required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
-		prepare()
+		prepareView()
 	}
 	
 	/**
@@ -93,7 +94,7 @@ open class CollectionView: UICollectionView {
      */
 	public override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
 		super.init(frame: frame, collectionViewLayout: layout)
-		prepare()
+		prepareView()
 	}
 	
 	/**
@@ -102,7 +103,7 @@ open class CollectionView: UICollectionView {
      */
 	public init(frame: CGRect) {
 		super.init(frame: frame, collectionViewLayout: CollectionViewLayout())
-		prepare()
+		prepareView()
 	}
 	
 	/// A convenience initializer that initializes the object.
@@ -112,14 +113,14 @@ open class CollectionView: UICollectionView {
 	
 	/**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
+     it is recommended to override the prepareView method
      to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
+     The super.prepareView method should always be called immediately
      when subclassing.
      */
-	open func prepare() {
+	open func prepareView() {
 		contentScaleFactor = Device.scale
 		backgroundColor = Color.clear
-		contentInset = .zero
-    }
+		contentInset = UIEdgeInsets.zero
+	}
 }

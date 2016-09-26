@@ -42,6 +42,7 @@ extension UINavigationController {
     }
 }
 
+@IBDesignable
 open class NavigationController: UINavigationController {
     /**
      An initializer that initializes the object with a NSCoder object.
@@ -90,7 +91,7 @@ open class NavigationController: UINavigationController {
 	
 	open override func viewDidLoad() {
 		super.viewDidLoad()
-		prepare()
+		prepareView()
 	}
 	
 	open override func viewDidAppear(_ animated: Bool) {
@@ -105,12 +106,12 @@ open class NavigationController: UINavigationController {
     
 	/**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
+     it is recommended to override the prepareView method
      to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
+     The super.prepareView method should always be called immediately
      when subclassing.
      */
-	open func prepare() {
+	open func prepareView() {
         view.clipsToBounds = true
 		view.backgroundColor = Color.white
         view.contentScaleFactor = Device.scale
@@ -134,9 +135,11 @@ extension NavigationController: UINavigationBarDelegate {
      */
     public func navigationBar(_ navigationBar: UINavigationBar, shouldPush item: UINavigationItem) -> Bool {
         if let v = navigationBar as? NavigationBar {
-            item.backButton.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
-            item.backButton.image = v.backButtonImage
-            item.leftViews.append(item.backButton)
+            let backButton = IconButton(image: v.backButtonImage, tintColor: Color.blueGrey.base)
+            backButton.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
+            
+            item.backButton = backButton
+            item.leftControls.append(backButton)
             v.layoutNavigationItem(item: item)
         }
         return true

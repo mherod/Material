@@ -34,15 +34,15 @@ import UIKit
 private var PageTabBarItemKey: UInt8 = 0
 
 open class PageTabBarItem: FlatButton {
-    open override func prepare() {
-        super.prepare()
-        pulse.animation = .none
+    open override func prepareView() {
+        super.prepareView()
+        pulseAnimation = .none
     }
 }
 
 open class PageTabBar: TabBar {
-    open override func prepare() {
-        super.prepare()
+    open override func prepareView() {
+        super.prepareView()
         isLineAnimated = false
         lineAlignment = .top
     }
@@ -100,9 +100,6 @@ public protocol PageTabBarControllerDelegate {
 
 @objc(PageTabBarController)
 open class PageTabBarController: RootController {
-    /// Reference to the PageTabBar.
-    open private(set) lazy var pageTabBar: PageTabBar = PageTabBar()
-    
     /// Indicates that the tab has been pressed and animating.
     open internal(set) var isTabSelectedAnimation = false
     
@@ -111,6 +108,9 @@ open class PageTabBarController: RootController {
     
     /// PageTabBar alignment setting.
     open var pageTabBarAlignment = PageTabBarAlignment.bottom
+    
+    /// Reference to the PageTabBar.
+    open internal(set) lazy var pageTabBar: PageTabBar = PageTabBar()
     
     /// Delegation handler.
     open weak var delegate: PageTabBarControllerDelegate?
@@ -125,22 +125,19 @@ open class PageTabBarController: RootController {
     
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        prepare()
     }
     
     public override init(rootViewController: UIViewController) {
         super.init(rootViewController: UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil))
         viewControllers.append(rootViewController)
         setViewControllers(viewControllers, direction: .forward, animated: true)
-        prepare()
     }
     
-    public init(viewControllers: [UIViewController], selectedIndex: Int) {
+    public init(viewControllers: [UIViewController], selectedIndex: Int, direction: UIPageViewControllerNavigationDirection, animated: Bool) {
         super.init(rootViewController: UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil))
         self.selectedIndex = selectedIndex
         self.viewControllers.append(contentsOf: viewControllers)
-        setViewControllers([self.viewControllers[selectedIndex]], direction: .forward, animated: true)
-        prepare()
+        setViewControllers([self.viewControllers[selectedIndex]], direction: direction, animated: animated)
     }
     
     /**
@@ -178,20 +175,19 @@ open class PageTabBarController: RootController {
      */
     open func setViewControllers(_ viewControllers: [UIViewController], direction: UIPageViewControllerNavigationDirection, animated: Bool, completion: ((Bool) -> Void)? = nil) {
         pageViewController?.setViewControllers(viewControllers, direction: direction, animated: animated, completion: completion)
-        prepare()
+        preparePageTabBarItems()
     }
     
     /**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
+     it is recommended to override the prepareView method
      to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
+     The super.prepareView method should always be called immediately
      when subclassing.
      */
-    open override func prepare() {
-        super.prepare()
+    open override func prepareView() {
+        super.prepareView()
         preparePageTabBar()
-        preparePageTabBarItems()
     }
     
     override func prepareRootViewController() {

@@ -30,23 +30,23 @@
 
 import UIKit
 
-open class PhotoLibraryController: UIViewController {
+open class PhotoLibraryController: UIViewController, PhotoLibraryDelegate {
     /// A reference to a PhotoLibrary.
-    open private(set) lazy var photoLibrary: PhotoLibrary = PhotoLibrary()
+    public private(set) lazy var photoLibrary: PhotoLibrary = PhotoLibrary()
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        prepare()
+        prepareView()
     }
     
     /**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
+     it is recommended to override the prepareView method
      to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
+     The super.prepareView method should always be called immediately
      when subclassing.
      */
-    open func prepare() {
+    open func prepareView() {
         view.clipsToBounds = true
         view.backgroundColor = Color.white
         view.contentScaleFactor = Device.scale
@@ -58,5 +58,3 @@ open class PhotoLibraryController: UIViewController {
         photoLibrary.delegate = self
     }
 }
-
-extension PhotoLibraryController: PhotoLibraryDelegate {}

@@ -30,6 +30,7 @@
 
 import UIKit
 
+@IBDesignable
 open class RootController: UIViewController {
 	/// Device status bar style.
 	open var statusBarStyle: UIStatusBarStyle {
@@ -69,7 +70,7 @@ open class RootController: UIViewController {
      */
 	public required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
-		prepare()
+		prepareView()
 	}
 	
 	/**
@@ -79,7 +80,7 @@ open class RootController: UIViewController {
      */
 	public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
 		super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-		prepare()
+		prepareView()
 	}
 	
 	/**
@@ -89,7 +90,7 @@ open class RootController: UIViewController {
 	public init(rootViewController: UIViewController) {
 		super.init(nibName: nil, bundle: nil)
 		self.rootViewController = rootViewController
-		prepare()
+		prepareView()
 	}
 	
 	open override func viewWillLayoutSubviews() {
@@ -113,27 +114,26 @@ open class RootController: UIViewController {
      the transition animation from the active rootViewController
      to the toViewController has completed.
      */
-	open func transition(to viewController: UIViewController, duration: TimeInterval = 0.5, options: UIViewAnimationOptions = [], animations: (() -> Void)? = nil, completion: ((Bool) -> Void)? = nil) {
+	open func transitionFromRootViewController(toViewController: UIViewController, duration: TimeInterval = 0.5, options: UIViewAnimationOptions = [], animations: (() -> Void)? = nil, completion: ((Bool) -> Void)? = nil) {
 		rootViewController.willMove(toParentViewController: nil)
-		addChildViewController(viewController)
-		viewController.view.frame = rootViewController.view.bounds
+		addChildViewController(toViewController)
+		toViewController.view.frame = rootViewController.view.bounds
         transition(from: rootViewController,
-            to: viewController,
+            to: toViewController,
 			duration: duration,
 			options: options,
-			animations: animations) { [weak self, completion = completion] (result: Bool) in
-                guard let s = self else {
-                    return
-                }
-                
-                viewController.didMove(toParentViewController: s)
-                s.rootViewController.removeFromParentViewController()
-                s.rootViewController = viewController
-                s.rootViewController.view.clipsToBounds = true
-                s.rootViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-                s.rootViewController.view.contentScaleFactor = Device.scale
-                completion?(result)
-			}
+			animations: animations,
+			completion: { [weak self] (result: Bool) in
+				if let s: RootController = self {
+					toViewController.didMove(toParentViewController: s)
+					s.rootViewController.removeFromParentViewController()
+					s.rootViewController = toViewController
+					s.rootViewController.view.clipsToBounds = true
+					s.rootViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+					s.rootViewController.view.contentScaleFactor = Device.scale
+					completion?(result)
+				}
+			})
 	}
 	
 	/**
@@ -145,41 +145,40 @@ open class RootController: UIViewController {
 	
 	/**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
+     it is recommended to override the prepareView method
      to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
+     The super.prepareView method should always be called immediately
      when subclassing.
      */
-	open func prepare() {
+	open func prepareView() {
         view.clipsToBounds = true
         view.backgroundColor = Color.white
         view.contentScaleFactor = Device.scale
+        
         prepareRootViewController()
 	}
 	
 	/// A method that prepares the rootViewController.
 	internal func prepareRootViewController() {
-		prepare(viewController: rootViewController, withContainer: view)
+		prepareViewControllerWithinContainer(viewController: rootViewController, container: view)
 	}
 	
 	/**
-     A method that adds the passed in controller as a child of
-     the BarController within the passed in
-     container view.
-     - Parameter viewController: A UIViewController to add as a child.
-     - Parameter withContainer container: A UIView that is the parent of the
-     passed in controller view within the view hierarchy.
-     */
-	internal func prepare(viewController: UIViewController?, withContainer container: UIView) {
-        guard let v = viewController else {
-            return
-        }
-        
-        addChildViewController(v)
-        container.addSubview(v.view)
-        v.didMove(toParentViewController: self)
-        v.view.clipsToBounds = true
-        v.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.view.contentScaleFactor = Device.scale
+	A method that adds the passed in controller as a child of
+	the BarController within the passed in
+	container view.
+	- Parameter viewController: A UIViewController to add as a child.
+	- Parameter container: A UIView that is the parent of the
+	passed in controller view within the view hierarchy.
+	*/
+	internal func prepareViewControllerWithinContainer(viewController: UIViewController?, container: UIView) {
+		if let v: UIViewController = viewController {
+			addChildViewController(v)
+			container.addSubview(v.view)
+			v.didMove(toParentViewController: self)
+            v.view.clipsToBounds = true
+			v.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+			v.view.contentScaleFactor = Device.scale
+		}
 	}
 }

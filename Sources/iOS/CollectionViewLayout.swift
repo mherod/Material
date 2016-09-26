@@ -37,27 +37,27 @@ open class CollectionViewLayout: UICollectionViewLayout {
 	/// The size of items.
 	open var itemSize = CGSize.zero
 	
-	/// A preset wrapper around contentEdgeInsets.
+	/// A preset wrapper around contentInset.
 	open var contentEdgeInsetsPreset: EdgeInsetsPreset = .none {
 		didSet {
-			contentEdgeInsets = EdgeInsetsPresetToValue(preset: contentEdgeInsetsPreset)
+			contentInset = EdgeInsetsPresetToValue(preset: contentEdgeInsetsPreset)
 		}
 	}
 	
-	/// A wrapper around grid.contentEdgeInsets.
-	open var contentEdgeInsets = EdgeInsets.zero
+	/// A wrapper around grid.contentInset.
+	open var contentInset = EdgeInsets.zero
 	
 	/// Size of the content.
-	open internal(set) var contentSize = CGSize.zero
+	open private(set) var contentSize = CGSize.zero
 	
 	/// Layout attribute items.
-	open internal(set) lazy var layoutItems = [(UICollectionViewLayoutAttributes, NSIndexPath)]()
+	open private(set) var layoutItems = [(UICollectionViewLayoutAttributes, NSIndexPath)]()
 	
 	/// Cell data source items.
-	open internal(set) var dataSourceItems: [CollectionDataSourceItem]?
+	open private(set) var dataSourceItems: [DataSourceItem]?
 	
 	/// Scroll direction.
-	open var scrollDirection = UICollectionViewScrollDirection.vertical
+	open var scrollDirection: UICollectionViewScrollDirection = .vertical
 	
 	/// A preset wrapper around interimSpace.
 	open var interimSpacePreset = InterimSpacePreset.none {
@@ -90,14 +90,14 @@ open class CollectionViewLayout: UICollectionViewLayout {
 	
 	open override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
-		let item = dataSourceItems![indexPath.item]
+		let item: DataSourceItem = dataSourceItems![indexPath.item]
 		
 		if 0 < itemSize.width && 0 < itemSize.height {
-            attributes.frame = CGRect(x: offset.x, y: offset.y, width: itemSize.width - contentEdgeInsets.left - contentEdgeInsets.right, height: itemSize.height - contentEdgeInsets.top - contentEdgeInsets.bottom)
+            attributes.frame = CGRect(x: offset.x, y: offset.y, width: itemSize.width - contentInset.left - contentInset.right, height: itemSize.height - contentInset.top - contentInset.bottom)
 		} else if .vertical == scrollDirection {
-            attributes.frame = CGRect(x: contentEdgeInsets.left, y: offset.y, width: collectionView!.bounds.width - contentEdgeInsets.left - contentEdgeInsets.right, height: item.height ?? collectionView!.bounds.height)
+            attributes.frame = CGRect(x: contentInset.left, y: offset.y, width: collectionView!.bounds.width - contentInset.left - contentInset.right, height: item.height ?? collectionView!.bounds.height)
 		} else {
-            attributes.frame = CGRect(x: offset.x, y: contentEdgeInsets.top, width: item.width ?? collectionView!.bounds.width, height: collectionView!.bounds.height - contentEdgeInsets.top - contentEdgeInsets.bottom)
+            attributes.frame = CGRect(x: offset.x, y: contentInset.top, width: item.width ?? collectionView!.bounds.width, height: collectionView!.bounds.height - contentInset.top - contentInset.bottom)
 		}
 		
 		return attributes
@@ -127,15 +127,15 @@ open class CollectionViewLayout: UICollectionViewLayout {
 		return proposedContentOffset
 	}
 	
-	private func prepareLayoutForItems(dataSourceItems: [CollectionDataSourceItem]) {
+	private func prepareLayoutForItems(dataSourceItems: [DataSourceItem]) {
 		self.dataSourceItems = dataSourceItems
 		layoutItems.removeAll()
 		
-		offset.x = contentEdgeInsets.left
-		offset.y = contentEdgeInsets.top
+		offset.x = contentInset.left
+		offset.y = contentInset.top
 		
 		for i in 0..<dataSourceItems.count {
-			let item = dataSourceItems[i]
+			let item: DataSourceItem = dataSourceItems[i]
 			let indexPath = IndexPath(item: i, section: 0)
 			layoutItems.append((layoutAttributesForItem(at: indexPath)!, indexPath as NSIndexPath))
 			
@@ -146,8 +146,8 @@ open class CollectionViewLayout: UICollectionViewLayout {
 			offset.y += nil == item.height ? itemSize.height : item.height!
 		}
 		
-		offset.x += contentEdgeInsets.right - interimSpace
-		offset.y += contentEdgeInsets.bottom - interimSpace
+		offset.x += contentInset.right - interimSpace
+		offset.y += contentInset.bottom - interimSpace
 		
 		if 0 < itemSize.width && 0 < itemSize.height {
             contentSize = CGSize(width: offset.x, height: offset.y)

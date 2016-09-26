@@ -33,6 +33,7 @@ import UIKit
 @objc(TextViewDelegate)
 public protocol TextViewDelegate : UITextViewDelegate {}
 
+@IBDesignable
 @objc(TextView)
 public class TextView: UITextView {
 	/// A property that accesses the backing layer's backgroundColor.
@@ -113,7 +114,7 @@ public class TextView: UITextView {
 	*/
 	public required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
-		prepare()
+		prepareView()
 	}
 	
 	/**
@@ -125,7 +126,7 @@ public class TextView: UITextView {
 	*/
 	public override init(frame: CGRect, textContainer: NSTextContainer?) {
 		super.init(frame: frame, textContainer: textContainer)
-		prepare()
+		prepareView()
 	}
 	
 	/**
@@ -161,11 +162,11 @@ public class TextView: UITextView {
 	internal func reloadView() {
 		if let p = placeholderLabel {
 			removeConstraints(constraints)
-			layout(p).edges(
-                top: textContainerInset.top,
-                left: textContainerInset.left + textContainer.lineFragmentPadding,
-                bottom: textContainerInset.bottom,
-                right: textContainerInset.right + textContainer.lineFragmentPadding)
+			_ = layout(p).edges(
+                    top: textContainerInset.top,
+                    left: textContainerInset.left + textContainer.lineFragmentPadding,
+                    bottom: textContainerInset.bottom,
+                    right: textContainerInset.right + textContainer.lineFragmentPadding)
 		}
 	}
 	
@@ -213,12 +214,12 @@ public class TextView: UITextView {
 	
 	/**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
+     it is recommended to override the prepareView method
      to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
+     The super.prepareView method should always be called immediately
      when subclassing.
      */
-	public func prepare() {
+	public func prepareView() {
 		contentScaleFactor = Device.scale
 		textContainerInset = .zero
 		backgroundColor = Color.white

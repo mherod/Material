@@ -30,16 +30,26 @@
 
 import UIKit
 
-open class IconButton: Button {
-    /**
-     Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepareView method
-     to initialize property values and other setup operations.
-     The super.prepareView method should always be called immediately
-     when subclassing.
-     */
-	open override func prepareView() {
-		super.prepareView()
-		pulseAnimation = .center
+public struct DataSourceItem {
+	/// Stores an the data for the item.
+	public var data: Any?
+	
+	/// Width for horizontal scroll direction.
+	public var width: CGFloat?
+	
+	/// Height for vertical scroll direction.
+	public var height: CGFloat?
+	
+	/**
+	Initializer.
+	- Parameter data: A reference to an Any that is associated
+	with a width or height.
+	- Parameter width: The width for the horizontal scroll direction.
+	- Parameter height: The height for the vertical scroll direction.
+	*/
+	public init(data: Any? = nil, width: CGFloat? = nil, height: CGFloat? = nil) {
+		self.data = data
+		self.width = width
+		self.height = height
 	}
 }

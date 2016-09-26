@@ -32,7 +32,7 @@ import UIKit
 
 private var ToolbarContext: UInt8 = 0
 
-open class Toolbar: Bar {
+open class Toolbar: BarView {
 	/// A convenience property to set the titleLabel text.
 	open var title: String? {
 		get {
@@ -85,11 +85,11 @@ open class Toolbar: Bar {
 	
 	/**
      A convenience initializer with parameter settings.
-     - Parameter leftViews: An Array of UIViews that go on the left side.
-     - Parameter rightViews: An Array of UIViews that go on the right side.
+     - Parameter leftControls: An Array of UIControls that go on the left side.
+     - Parameter rightControls: An Array of UIControls that go on the right side.
      */
-	public override init(leftViews: [UIView]? = nil, rightViews: [UIView]? = nil) {
-		super.init(leftViews: leftViews, rightViews: rightViews)
+	public override init(leftControls: [UIView]? = nil, rightControls: [UIView]? = nil) {
+		super.init(leftControls: leftControls, rightControls: rightControls)
 	}
 	
     open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -102,53 +102,51 @@ open class Toolbar: Bar {
     
     open override func layoutSubviews() {
         super.layoutSubviews()
-        guard willLayout else {
-            return
-        }
-        
-        if nil != title && "" != title {
-            if nil == titleLabel.superview {
-                contentView.addSubview(titleLabel)
-            }
-            titleLabel.frame = contentView.bounds
-        } else {
-            titleLabel.removeFromSuperview()
-        }
-        
-        if nil != detail && "" != detail {
-            if nil == detailLabel.superview {
-                contentView.addSubview(detailLabel)
+        if willRenderView {
+            if nil != title && "" != title {
+                if nil == titleLabel.superview {
+                    contentView.addSubview(titleLabel)
+                }
+                titleLabel.frame = contentView.bounds
+            } else {
+                titleLabel.removeFromSuperview()
             }
             
-            if nil == titleLabel.superview {
-                detailLabel.frame = contentView.bounds
+            if nil != detail && "" != detail {
+                if nil == detailLabel.superview {
+                    contentView.addSubview(detailLabel)
+                }
+                
+                if nil == titleLabel.superview {
+                    detailLabel.frame = contentView.bounds
+                } else {
+                    titleLabel.sizeToFit()
+                    detailLabel.sizeToFit()
+                    
+                    let diff: CGFloat = (contentView.height - titleLabel.height - detailLabel.height) / 2
+                    
+                    titleLabel.height += diff
+                    titleLabel.width = contentView.width
+                    
+                    detailLabel.height += diff
+                    detailLabel.width = contentView.width
+                    detailLabel.y = titleLabel.height
+                }
             } else {
-                titleLabel.sizeToFit()
-                detailLabel.sizeToFit()
-                
-                let diff: CGFloat = (contentView.height - titleLabel.height - detailLabel.height) / 2
-                
-                titleLabel.height += diff
-                titleLabel.width = contentView.width
-                
-                detailLabel.height += diff
-                detailLabel.width = contentView.width
-                detailLabel.y = titleLabel.height
+                detailLabel.removeFromSuperview()
             }
-        } else {
-            detailLabel.removeFromSuperview()
         }
     }
 
 	/**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
+     it is recommended to override the prepareView method
      to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
+     The super.prepareView method should always be called immediately
      when subclassing.
      */
-	open override func prepare() {
-		super.prepare()
+	open override func prepareView() {
+		super.prepareView()
         contentViewAlignment = .center
         interimSpacePreset = .interimSpace3
         contentEdgeInsetsPreset = .square1
@@ -157,19 +155,17 @@ open class Toolbar: Bar {
 	}
 	
 	/// Prepares the titleLabel.
-    private func prepareTitleLabel() {
-        titleLabel.textAlignment = .center
+	private func prepareTitleLabel() {
         titleLabel.contentScaleFactor = Device.scale
 		titleLabel.font = RobotoFont.medium(with: 17)
-        titleLabel.textColor = Color.darkText.primary
+        titleLabel.textAlignment = .center
         addObserver(self, forKeyPath: "titleLabel.textAlignment", options: [], context: &ToolbarContext)
 	}
 	
 	/// Prepares the detailLabel.
 	private func prepareDetailLabel() {
-        detailLabel.textAlignment = .center
         detailLabel.contentScaleFactor = Device.scale
 		detailLabel.font = RobotoFont.regular(with: 12)
-        detailLabel.textColor = Color.darkText.secondary
+        detailLabel.textAlignment = .center
 	}
 }

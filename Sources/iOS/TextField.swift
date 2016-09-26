@@ -32,6 +32,7 @@ import UIKit
 
 public protocol TextFieldDelegate: UITextFieldDelegate {}
 
+@IBDesignable
 open class TextField: UITextField {
     /// Default size when using AutoLayout.
     open override var intrinsicContentSize: CGSize {
@@ -39,7 +40,7 @@ open class TextField: UITextField {
     }
     
     /// A Boolean that indicates if the TextField is in an animating state.
-	open internal(set) var isAnimating = false
+	open private(set) var animating = false
 	
 	/// A property that accesses the backing layer's backgroundColor.
 	@IBInspectable
@@ -198,7 +199,7 @@ open class TextField: UITextField {
 	
 	/// Enables the clearIconButton.
 	@IBInspectable
-    open var isClearIconButtonEnable: Bool {
+    open var enableClearIconButton: Bool {
 		get {
 			return nil != clearIconButton
 		}
@@ -207,7 +208,7 @@ open class TextField: UITextField {
 				if nil == clearIconButton {
                     clearIconButton = IconButton(image: Icon.cm.clear, tintColor: placeholderColor)
 					clearIconButton!.contentEdgeInsets = .zero
-					clearIconButton!.pulse.animation = .center
+					clearIconButton!.pulseAnimation = .center
                     clearButtonMode = .never
 					rightViewMode = .whileEditing
 					rightView = clearIconButton
@@ -233,7 +234,7 @@ open class TextField: UITextField {
 	
 	/// Enables the visibilityIconButton.
 	@IBInspectable
-    open var isVisibilityIconButtonEnable: Bool {
+    open var enableVisibilityIconButton: Bool {
 		get {
 			return nil != visibilityIconButton
 		}
@@ -242,7 +243,7 @@ open class TextField: UITextField {
 				if nil == visibilityIconButton {
                     visibilityIconButton = IconButton(image: Icon.visibility, tintColor: placeholderColor.withAlphaComponent(isSecureTextEntry ? 0.38 : 0.54))
 					visibilityIconButton!.contentEdgeInsets = .zero
-					visibilityIconButton!.pulse.animation = .center
+					visibilityIconButton!.pulseAnimation = .center
 					isSecureTextEntry = true
 					clearButtonMode = .never
 					rightViewMode = .whileEditing
@@ -290,7 +291,7 @@ open class TextField: UITextField {
      */
 	public required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
-		prepare()
+		prepareView()
 	}
 	
 	/**
@@ -301,7 +302,7 @@ open class TextField: UITextField {
      */
 	public override init(frame: CGRect) {
 		super.init(frame: frame)
-		prepare()
+		prepareView()
 	}
 	
 	/// A convenience initializer.
@@ -358,12 +359,12 @@ open class TextField: UITextField {
 	
 	/**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
+     it is recommended to override the prepareView method
      to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
+     The super.prepareView method should always be called immediately
      when subclassing.
      */
-	open func prepare() {
+	open func prepareView() {
 		super.placeholder = nil
         clipsToBounds = false
 		borderStyle = .none
@@ -378,7 +379,7 @@ open class TextField: UITextField {
     
 	/// Ensures that the components are sized correctly.
 	open func layoutToSize() {
-		if !isAnimating {
+		if !animating {
             layoutPlaceholderLabel()
 			layoutDetailLabel()
 			layoutClearIconButton()
@@ -460,7 +461,7 @@ open class TextField: UITextField {
 	/// The animation for the placeholder when editing begins.
 	open func placeholderEditingDidBeginAnimation() {
 		if placeholderLabel.transform.isIdentity {
-			isAnimating = true
+			animating = true
 			UIView.animate(withDuration: 0.15, animations: { [weak self] in
 				if let s = self {
 					s.placeholderLabel.transform = CGAffineTransform(scaleX: 0.75, y: 0.75)
@@ -475,7 +476,7 @@ open class TextField: UITextField {
 					s.placeholderLabel.textColor = s.placeholderActiveColor
 				}
 			}) { [weak self] _ in
-				self?.isAnimating = false
+				self?.animating = false
 			}
 		} else if isEditing {
 			placeholderLabel.textColor = placeholderActiveColor
@@ -485,7 +486,7 @@ open class TextField: UITextField {
 	/// The animation for the placeholder when editing ends.
 	open func placeholderEditingDidEndAnimation() {
 		if !placeholderLabel.transform.isIdentity && true == text?.isEmpty {
-			isAnimating = true
+			animating = true
 			UIView.animate(withDuration: 0.15, animations: { [weak self] in
 				if let s = self {
 					s.placeholderLabel.transform = CGAffineTransform.identity
@@ -494,7 +495,7 @@ open class TextField: UITextField {
 					s.placeholderLabel.textColor = s.placeholderColor
 				}
 			}) { [weak self] _ in
-				self?.isAnimating = false
+				self?.animating = false
 			}
 		} else if !isEditing {
 			placeholderLabel.textColor = placeholderColor

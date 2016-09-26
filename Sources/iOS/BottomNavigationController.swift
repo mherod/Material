@@ -59,9 +59,10 @@ public enum BottomNavigationTransitionAnimation: Int {
 	case fade
 }
 
+@IBDesignable
 open class BottomNavigationController: UITabBarController, UITabBarControllerDelegate {
 	/// The transition animation to use when selecting a new tab.
-	open var transitionAnimation = BottomNavigationTransitionAnimation.fade
+	open var transitionAnimation: BottomNavigationTransitionAnimation = .fade
 	
 	/**
      An initializer that initializes the object with a NSCoder object.
@@ -80,23 +81,13 @@ open class BottomNavigationController: UITabBarController, UITabBarControllerDel
 		super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
 	}
 	
-    /// An initializer that accepts no parameters.
 	public init() {
 		super.init(nibName: nil, bundle: nil)
 	}
-    
-    /**
-     An initializer that initializes the object an Array of UIViewControllers.
-     - Parameter viewControllers: An Array of UIViewControllers.
-     */
-    public init(viewControllers: [UIViewController]) {
-        super.init(nibName: nil, bundle: nil)
-        self.viewControllers = viewControllers
-    }
 	
 	open override func viewDidLoad() {
 		super.viewDidLoad()
-		prepare()
+		prepareView()
 	}
 	
 	open override func viewWillLayoutSubviews() {
@@ -133,17 +124,16 @@ open class BottomNavigationController: UITabBarController, UITabBarControllerDel
 	
 	/**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
+     it is recommended to override the prepareView method
      to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
+     The super.prepareView method should always be called immediately
      when subclassing.
      */
-	open func prepare() {
+	open func prepareView() {
 		view.clipsToBounds = true
 		view.contentScaleFactor = Device.scale
-		view.backgroundColor = Color.white
-        delegate = self
-        prepareTabBar()
+		delegate = self
+		prepareTabBar()
 	}
 	
 	/// Handles transitions when tabBarItems are pressed.

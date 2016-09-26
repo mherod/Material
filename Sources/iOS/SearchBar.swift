@@ -30,19 +30,19 @@
 
 import UIKit
 
-open class SearchBar: Bar {
+open class SearchBar: BarView {
 	/// The UITextField for the searchBar.
-	open private(set) lazy var textField = UITextField()
+	open private(set) var textField: UITextField!
 	
 	/// Reference to the clearButton.
 	open private(set) var clearButton: IconButton!
 	
 	/// Handle the clearButton manually.
 	@IBInspectable
-    open var isClearButtonAutoHandleEnabled = true {
+    open var clearButtonAutoHandleEnabled: Bool = true {
 		didSet {
 			clearButton.removeTarget(self, action: #selector(handleClearButton), for: .touchUpInside)
-			if isClearButtonAutoHandleEnabled {
+			if clearButtonAutoHandleEnabled {
 				clearButton.addTarget(self, action: #selector(handleClearButton), for: .touchUpInside)
 			}
 		}
@@ -82,7 +82,7 @@ open class SearchBar: Bar {
 	
 	/// Placeholder textColor.
 	@IBInspectable
-    open var placeholderColor = Color.darkText.others {
+    open var placeholderColor: UIColor = Color.darkText.others {
 		didSet {
 			if let v: String = placeholder {
 				textField.attributedPlaceholder = NSAttributedString(string: v, attributes: [NSForegroundColorAttributeName: placeholderColor])
@@ -92,50 +92,48 @@ open class SearchBar: Bar {
 	
 	open override func layoutSubviews() {
 		super.layoutSubviews()
-        guard willLayout else {
-            return
-        }
-        
-        textField.frame = contentView.bounds
-        layoutClearButton()
+		if willRenderView {
+			textField.frame = contentView.bounds
+			layoutClearButton()
+		}
 	}
 	
 	/**
-     An initializer that initializes the object with a NSCoder object.
-     - Parameter aDecoder: A NSCoder instance.
-     */
+	An initializer that initializes the object with a NSCoder object.
+	- Parameter aDecoder: A NSCoder instance.
+	*/
 	public required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 	}
 	
 	/**
-     An initializer that initializes the object with a CGRect object.
-     If AutoLayout is used, it is better to initilize the instance
-     using the init() initializer.
-     - Parameter frame: A CGRect instance.
-     */
+	An initializer that initializes the object with a CGRect object.
+	If AutoLayout is used, it is better to initilize the instance
+	using the init() initializer.
+	- Parameter frame: A CGRect instance.
+	*/
 	public override init(frame: CGRect) {
 		super.init(frame: frame)
 	}
 	
 	/**
-     A convenience initializer with parameter settings.
-     - Parameter leftViews: An Array of UIViews that go on the left side.
-     - Parameter rightViews: An Array of UIViews that go on the right side.
-     */
-	public override init(leftViews: [UIView]? = nil, rightViews: [UIView]? = nil) {
-		super.init(leftViews: leftViews, rightViews: rightViews)
+	A convenience initializer with parameter settings.
+	- Parameter leftControls: An Array of UIControls that go on the left side.
+	- Parameter rightControls: An Array of UIControls that go on the right side.
+	*/
+	public override init(leftControls: [UIView]? = nil, rightControls: [UIView]? = nil) {
+		super.init(leftControls: leftControls, rightControls: rightControls)
 	}
 	
 	/**
-     Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
-     to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
-     when subclassing.
-     */
-	open override func prepare() {
-		super.prepare()
+	Prepares the view instance when intialized. When subclassing,
+	it is recommended to override the prepareView method
+	to initialize property values and other setup operations.
+	The super.prepareView method should always be called immediately
+	when subclassing.
+	*/
+	open override func prepareView() {
+		super.prepareView()
         interimSpacePreset = .interimSpace3
         contentEdgeInsetsPreset = .square1
         prepareTextField()
@@ -144,7 +142,7 @@ open class SearchBar: Bar {
 	
 	/// Layout the clearButton.
 	open func layoutClearButton() {
-		let h = textField.frame.height
+		let h: CGFloat = textField.frame.height
         clearButton.frame = CGRect(x: textField.frame.width - h, y: 0, width: h, height: h)
 	}
 	
@@ -156,6 +154,7 @@ open class SearchBar: Bar {
 	
 	/// Prepares the textField.
 	private func prepareTextField() {
+		textField = UITextField()
 		textField.contentScaleFactor = Device.scale
 		textField.font = RobotoFont.regular(with: 17)
 		textField.backgroundColor = Color.clear
@@ -170,7 +169,7 @@ open class SearchBar: Bar {
 	private func prepareClearButton() {
         clearButton = IconButton(image: Icon.cm.close, tintColor: placeholderColor)
 		clearButton.contentEdgeInsets = .zero
-		isClearButtonAutoHandleEnabled = true
+		clearButtonAutoHandleEnabled = true
 		textField.clearButtonMode = .never
 		textField.rightViewMode = .whileEditing
 		textField.rightView = clearButton

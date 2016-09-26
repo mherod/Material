@@ -30,47 +30,44 @@
 
 import UIKit
 
-extension UIViewController {
+open class BarView: ControlView {
+    /// Divider layer.
+    open internal(set) var divider: Divider!
+    
 	/**
-     A convenience property that provides access to the SearchBarController.
-     This is the recommended method of accessing the SearchBarController
-     through child UIViewControllers.
+     An initializer that initializes the object with a NSCoder object.
+     - Parameter aDecoder: A NSCoder instance.
      */
-	public var searchBarController: SearchBarController? {
-		var viewController: UIViewController? = self
-		while nil != viewController {
-			if viewController is SearchBarController {
-				return viewController as? SearchBarController
-			}
-			viewController = viewController?.parent
-		}
-		return nil
-	}
-}
-
-open class SearchBarController: RootController {
-	/// Reference to the SearchBar.
-    open internal(set) lazy var searchBar: SearchBar = SearchBar()
-	
-	/**
-     To execute in the order of the layout chain, override this
-     method. LayoutSubviews should be called immediately, unless you
-     have a certain need.
-     */
-	open override func layoutSubviews() {
-		super.layoutSubviews()
-        
-        searchBar.grid.layoutEdgeInsets.top = .phone == Device.userInterfaceIdiom && Device.isLandscape ? 0 : 20
-        
-        let p = searchBar.intrinsicContentSize.height + searchBar.grid.layoutEdgeInsets.top + searchBar.grid.layoutEdgeInsets.bottom
-        
-        searchBar.width = view.width + searchBar.grid.layoutEdgeInsets.left + searchBar.grid.layoutEdgeInsets.right
-        searchBar.height = p
-        
-        rootViewController.view.y = p
-        rootViewController.view.height = view.height - p
+	public required init?(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)
 	}
 	
+	/**
+     An initializer that initializes the object with a CGRect object.
+     If AutoLayout is used, it is better to initilize the instance
+     using the init() initializer.
+     - Parameter frame: A CGRect instance.
+     */
+	public override init(frame: CGRect) {
+		super.init(frame: frame)
+	}
+	
+	/**
+     A convenience initializer with parameter settings.
+     - Parameter leftControls: An Array of UIControls that go on the left side.
+     - Parameter rightControls: An Array of UIControls that go on the right side.
+     */
+	public override init(leftControls: [UIView]? = nil, rightControls: [UIView]? = nil) {
+		super.init(leftControls: leftControls, rightControls: rightControls)
+	}
+	
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        if willRenderView {
+            divider.reload()
+        }
+    }
+    
 	/**
      Prepares the view instance when intialized. When subclassing,
      it is recommended to override the prepareView method
@@ -80,13 +77,11 @@ open class SearchBarController: RootController {
      */
 	open override func prepareView() {
 		super.prepareView()
-		prepareSearchBar()
-	}
-	
-	/// Prepares the searchBar.
-	private func prepareSearchBar() {
-        searchBar.depthPreset = .depth1
-        searchBar.zPosition = 1000
-        view.addSubview(searchBar)
-	}
+        prepareDivider()
+    }
+    
+    /// Prepares the divider.
+    private func prepareDivider() {
+        divider = Divider(view: self)
+    }
 }

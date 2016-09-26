@@ -33,13 +33,13 @@ import UIKit
 open class RaisedButton: Button {
 	/**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
+     it is recommended to override the prepareView method
      to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
+     The super.prepareView method should always be called immediately
      when subclassing.
      */
-	open override func prepare() {
-		super.prepare()
+	open override func prepareView() {
+		super.prepareView()
 		depthPreset = .depth1
 		cornerRadiusPreset = .cornerRadius1
 		backgroundColor = Color.white

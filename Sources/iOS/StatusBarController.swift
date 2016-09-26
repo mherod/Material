@@ -48,9 +48,10 @@ extension UIViewController {
 	}
 }
 
+@IBDesignable
 open class StatusBarController: RootController {
-	/// A reference to the statusBar.
-	open private(set) lazy var statusBar = View()
+	/// A reference to the statusBarView.
+	open internal(set) lazy var statusBarView = View()
 	
 	/**
 	To execute in the order of the layout chain, override this
@@ -59,26 +60,26 @@ open class StatusBarController: RootController {
 	*/
 	open override func layoutSubviews() {
 		super.layoutSubviews()
-		statusBar.isHidden = Device.isLandscape && .phone == Device.userInterfaceIdiom
+		statusBarView.isHidden = Device.isLandscape && .phone == Device.userInterfaceIdiom
 		rootViewController.view.frame = view.bounds
 	}
 	
 	/**
 	Prepares the view instance when intialized. When subclassing,
-	it is recommended to override the prepare method
+	it is recommended to override the prepareView method
 	to initialize property values and other setup operations.
-	The super.prepare method should always be called immediately
+	The super.prepareView method should always be called immediately
 	when subclassing.
 	*/
-	open override func prepare() {
-        super.prepare()
-		prepareStatusBar()
+	open override func prepareView() {
+        super.prepareView()
+		prepareStatusBarView()
 	}
 	
-	/// Prepares the statusBar.
-	private func prepareStatusBar() {
-		statusBar.zPosition = 3000
-		statusBar.backgroundColor = Color.black.withAlphaComponent(0.12)
-		view.layout(statusBar).top().horizontally().height(20)
+	/// Prepares the statusBarView.
+	private func prepareStatusBarView() {
+		statusBarView.zPosition = 3000
+		statusBarView.backgroundColor = Color.black.withAlphaComponent(0.12)
+		_ = view.layout(statusBarView).top(0).horizontally().height(20)
 	}
 }

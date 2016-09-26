@@ -40,13 +40,13 @@ public class ErrorTextField: TextField {
     
     /**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
+     it is recommended to override the prepareView method
      to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
+     The super.prepareView method should always be called immediately
      when subclassing.
      */
-    override public func prepare() {
-        super.prepare()
+    override public func prepareView() {
+        super.prepareView()
         revealError = false
         detailColor = Color.red.base
     }

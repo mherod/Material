@@ -57,7 +57,7 @@ public protocol TabBarDelegate {
     optional func tabBarDidSelectButton(tabBar: TabBar, button: UIButton)
 }
 
-open class TabBar: Bar {
+open class TabBar: BarView {
     /// A boolean indicating if the TabBar line is in an animation state.
     open internal(set) var isAnimating = false
     
@@ -129,31 +129,29 @@ open class TabBar: Bar {
     
     open override func layoutSubviews() {
 		super.layoutSubviews()
-        guard willLayout else {
-            return
-        }
-        
-        guard 0 < buttons.count else {
-            return
-        }
-            
-        let columns: Int = contentView.grid.axis.columns / buttons.count
-        for b in buttons {
-            b.grid.columns = columns
-            b.contentEdgeInsets = .zero
-            b.cornerRadius = 0
-            
-            if isLineAnimated {
-                prepareLineAnimationHandler(button: b)
+		if willRenderView {
+            guard 0 < buttons.count else {
+                return
             }
-        }
-        contentView.grid.reload()
             
-        if nil == selected {
-            selected = buttons.first
+            let columns: Int = contentView.grid.axis.columns / buttons.count
+            for b in buttons {
+                b.grid.columns = columns
+                b.contentEdgeInsets = .zero
+                b.cornerRadius = 0
+                
+                if isLineAnimated {
+                    prepareLineAnimationHandler(button: b)
+                }
+            }
+            contentView.grid.reload()
+                
+            if nil == selected {
+                selected = buttons.first
+            }
+                
+            line.frame = CGRect(x: selected!.x, y: .bottom == lineAlignment ? height - lineHeight : 0, width: selected!.width, height: lineHeight)
         }
-            
-        line.frame = CGRect(x: selected!.x, y: .bottom == lineAlignment ? height - lineHeight : 0, width: selected!.width, height: lineHeight)
 	}
 	
 	/// Handles the button touch event.
@@ -201,13 +199,13 @@ open class TabBar: Bar {
     
 	/**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
+     it is recommended to override the prepareView method
      to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
+     The super.prepareView method should always be called immediately
      when subclassing.
      */
-	open override func prepare() {
-		super.prepare()
+	open override func prepareView() {
+		super.prepareView()
         
         autoresizingMask = .flexibleWidth
         prepareLine()

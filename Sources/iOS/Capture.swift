@@ -221,19 +221,19 @@ open class Capture: View, UIGestureRecognizerDelegate {
 	}
 	
 	/// A reference to the CapturePreview view.
-	open internal(set) var previewView: CapturePreview!
+	open private(set) var previewView: CapturePreview!
 	
 	/// A reference to the CaptureSession.
-	open internal(set) var captureSession: CaptureSession!
+	open private(set) var captureSession: CaptureSession!
 	
 	/// A reference to the focus layer used in focus animations.
-	open internal(set) var focusLayer: Layer?
+	open private(set) var focusLayer: Layer?
 	
     /// A reference to the exposure layer used in exposure animations.
-    open internal(set) var exposureLayer: Layer?
+    open private(set) var exposureLayer: Layer?
 	
     /// A reference to the reset layer used in reset animations.
-    open internal(set) var resetLayer: Layer?
+    open private(set) var resetLayer: Layer?
 	
 	/// A reference to the cameraButton.
 	open var cameraButton: UIButton? {
@@ -312,13 +312,13 @@ open class Capture: View, UIGestureRecognizerDelegate {
 	
     /**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepare method
+     it is recommended to override the prepareView method
      to initialize property values and other setup operations.
-     The super.prepare method should always be called immediately
+     The super.prepareView method should always be called immediately
      when subclassing.
      */
-	open override func prepare() {
-		super.prepare()
+	open override func prepareView() {
+		super.prepareView()
 		backgroundColor = Color.black
         prepareCaptureSession()
 		preparePreviewView()
@@ -568,7 +568,7 @@ open class Capture: View, UIGestureRecognizerDelegate {
             }
 			v.transform = CATransform3DMakeScale(0.5, 0.5, 1)
 		}) {
-			Animation.delay(time: 0.4) { [weak layer] in
+			_ = Animation.delay(time: 0.4) { [weak layer] in
                 Animation.animationDisabled { [weak layer] in
                     guard let v = layer else {
                         return

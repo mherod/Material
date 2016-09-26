@@ -30,6 +30,7 @@
 
 import UIKit
 
+@IBDesignable
 open class Label: UILabel {
 	/**
 	:name:	layerClass
@@ -119,7 +120,7 @@ open class Label: UILabel {
 		wrapped = true
 		contentsScale = Device.scale
 		super.init(coder: aDecoder)
-		prepare()
+		prepareView()
 	}
 	
 	/**
@@ -129,7 +130,7 @@ open class Label: UILabel {
 		wrapped = true
 		contentsScale = Device.scale
 		super.init(frame: frame)
-		prepare()
+		prepareView()
 	}
 	
 	/**
@@ -147,9 +148,9 @@ open class Label: UILabel {
 	}
 	
 	/**
-	:name:	prepare
+	:name:	prepareView
 	*/
-	open func prepare() {
+	open func prepareView() {
 		contentScaleFactor = Device.scale
 		textAlignment = .left
 	}

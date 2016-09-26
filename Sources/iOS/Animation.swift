@@ -59,8 +59,7 @@ public typealias AnimationDelayCancelBlock = (Bool) -> Void
 
 public struct Animation {
 	/// Delay helper method.
-    @discardableResult
-    public static func delay(time: TimeInterval, completion: @escaping () -> Void) -> AnimationDelayCancelBlock? {
+	public static func delay(time: TimeInterval, completion: @escaping () -> Void) -> AnimationDelayCancelBlock {
 		
 		func asyncAfter(completion: @escaping () -> Void) {
 			DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + time, execute: completion)
@@ -81,7 +80,7 @@ public struct Animation {
 			cancelable?(false)
 		}
 		
-		return cancelable;
+		return delayed;
 	}
 	
 	/**
@@ -128,11 +127,7 @@ public struct Animation {
 	:name:	animateWithDelay
 	*/
 	public static func animateWithDelay(delay d: CFTimeInterval, duration: CFTimeInterval, animations: @escaping (() -> Void), completion: (() -> Void)? = nil) {
-<<<<<<< HEAD
         _ = delay(time: d) {
-=======
-        delay(time: d) {
->>>>>>> CosmicMind/development
             animateWithDuration(duration: duration, animations: animations, completion: completion)
 		}
 	}

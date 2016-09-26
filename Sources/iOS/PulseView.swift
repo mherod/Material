@@ -31,9 +31,19 @@
 import UIKit
 
 open class PulseView: View {
-	/// A Pulse reference.
+	/// An Array of pulse layers.
+	open private(set) lazy var pulseLayers = [CAShapeLayer]()
+	
+	/// The opcaity value for the pulse animation.
 	@IBInspectable
-    open internal(set) lazy var pulse: Pulse = Pulse()
+    open var pulseOpacity: CGFloat = 0.25
+	
+	/// The color of the pulse effect.
+	@IBInspectable
+    open var pulseColor = Color.grey.base
+	
+	/// The type of PulseAnimation.
+	open var pulseAnimation = PulseAnimation.pointWithBacking
 	
 	/**
 	Triggers the pulse animation.
@@ -42,12 +52,12 @@ open class PulseView: View {
 	*/
 	open func pulse(point: CGPoint? = nil) {
         let p: CGPoint = nil == point ? CGPoint(x: CGFloat(width / 2), y: CGFloat(height / 2)) : point!
-        Animation.pulseExpandAnimation(layer: layer, visualLayer: visualLayer, point: p, width: width, height: height, pulse: &pulse)
-		Animation.delay(time: 0.35) { [weak self] in
+		Animation.pulseExpandAnimation(layer: layer, visualLayer: visualLayer, pulseColor: pulseColor, pulseOpacity: pulseOpacity, point: p, width: width, height: height, pulseLayers: &pulseLayers, pulseAnimation: pulseAnimation)
+		_ = Animation.delay(time: 0.35) { [weak self] in
             guard let s = self else {
                 return
             }
-            Animation.pulseContractAnimation(layer: s.layer, visualLayer: s.visualLayer, pulse: &s.pulse)
+            Animation.pulseContractAnimation(layer: s.layer, visualLayer: s.visualLayer, pulseColor: s.pulseColor, pulseLayers: &s.pulseLayers, pulseAnimation: s.pulseAnimation)
 		}
 	}
 	
@@ -59,7 +69,7 @@ open class PulseView: View {
      */
 	open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 		super.touchesBegan(touches, with: event)
-        Animation.pulseExpandAnimation(layer: layer, visualLayer: visualLayer, point: layer.convert(touches.first!.location(in: self), from: layer), width: width, height: height, pulse: &pulse)
+		Animation.pulseExpandAnimation(layer: layer, visualLayer: visualLayer, pulseColor: pulseColor, pulseOpacity: pulseOpacity, point: layer.convert(touches.first!.location(in: self), from: layer), width: width, height: height, pulseLayers: &pulseLayers, pulseAnimation: pulseAnimation)
 	}
 	
 	/**
@@ -70,7 +80,7 @@ open class PulseView: View {
      */
 	open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
 		super.touchesEnded(touches, with: event)
-        Animation.pulseContractAnimation(layer: layer, visualLayer: visualLayer, pulse: &pulse)
+		Animation.pulseContractAnimation(layer: layer, visualLayer: visualLayer, pulseColor: pulseColor, pulseLayers: &pulseLayers, pulseAnimation: pulseAnimation)
 	}
 	
 	/**
@@ -81,6 +91,6 @@ open class PulseView: View {
      */
 	open override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
 		super.touchesCancelled(touches, with: event)
-        Animation.pulseContractAnimation(layer: layer, visualLayer: visualLayer, pulse: &pulse)
+		Animation.pulseContractAnimation(layer: layer, visualLayer: visualLayer, pulseColor: pulseColor, pulseLayers: &pulseLayers, pulseAnimation: pulseAnimation)
 	}
 }

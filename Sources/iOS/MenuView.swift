@@ -30,33 +30,19 @@
 
 import UIKit
 
-@objc(SnackbarStatus)
-public enum SnackbarStatus: Int {
-    case visible
-    case hidden
+@objc(MenuViewDelegate)
+public protocol MenuViewDelegate {
+    /// Gets called when the user taps outside menu buttons.
+    @objc
+    optional func menuViewDidTapOutside(menuView: MenuView)
 }
 
-open class Snackbar: BarView {
-    /// A convenience property to set the titleLabel text.
-    public var text: String? {
-        get {
-            return textLabel.text
-        }
-        set(value) {
-            textLabel.text = value
-            layoutSubviews()
-        }
-    }
-    
-    /// Text label.
-    public internal(set) lazy var textLabel = UILabel()
-    
-    open override var intrinsicContentSize: CGSize {
-        return CGSize(width: width, height: 49)
-    }
-    
-    /// The status of the snackbar.
-    open internal(set) var status = SnackbarStatus.hidden
+open class MenuView : PulseView {
+	/// References the Menu instance.
+	open internal(set) lazy var menu: Menu = Menu()
+	
+    /// A delegation reference.
+    open weak var delegate: MenuViewDelegate?
     
     open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         /**
@@ -74,41 +60,58 @@ open class Snackbar: BarView {
             }
         }
         
+        if menu.isOpened {
+            delegate?.menuViewDidTapOutside?(menuView: self)
+        }
+        
         return super.hitTest(point, with: event)
     }
     
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        if willRenderView {
-            textLabel.frame = contentView.bounds
-        }
-    }
-    
-    /**
+	/**
      Prepares the view instance when intialized. When subclassing,
      it is recommended to override the prepareView method
      to initialize property values and other setup operations.
      The super.prepareView method should always be called immediately
      when subclassing.
      */
-    open override func prepareView() {
-        super.prepareView()
-        depthPreset = .none
-        interimSpacePreset = .interimSpace8
-        contentEdgeInsets.left = interimSpace
-        contentEdgeInsets.right = interimSpace
-        backgroundColor = Color.grey.darken3
-        clipsToBounds = false
-        prepareTextLabel()
-    }
-    
-    /// Prepares the textLabel.
-    private func prepareTextLabel() {
-        textLabel.contentScaleFactor = Device.scale
-        textLabel.font = RobotoFont.medium(with: 14)
-        textLabel.textAlignment = .left
-        textLabel.textColor = Color.white
-        textLabel.numberOfLines = 0
-        contentView.addSubview(textLabel)
-    }
+	open override func prepareView() {
+		super.prepareView()
+		pulseAnimation = .none
+		clipsToBounds = false
+		backgroundColor = nil
+	}
+
+	/**
+     Opens the menu with a callback.
+     - Parameter completion: An Optional callback that is executed when
+     all menu items have been opened.
+     */
+	open func open(completion: (() -> Void)? = nil) {
+		if true == menu.views?.first?.isUserInteractionEnabled {
+			menu.views?.first?.isUserInteractionEnabled = false
+			menu.open { [weak self] (v: UIView) in
+				if self?.menu.views?.last == v {
+					self?.menu.views?.first?.isUserInteractionEnabled = true
+					completion?()
+				}
+			}
+		}
+	}
+	
+	/**
+     Closes the menu with a callback.
+     - Parameter completion: An Optional callback that is executed when
+     all menu items have been closed.
+     */
+	open func close(completion: (() -> Void)? = nil) {
+		if true == menu.views?.first?.isUserInteractionEnabled {
+			menu.views?.first?.isUserInteractionEnabled = false
+			menu.close { [weak self] (v: UIView) in
+				if self?.menu.views?.last == v {
+					self?.menu.views?.first?.isUserInteractionEnabled = true
+					completion?()
+				}
+			}
+		}
+	}
 }

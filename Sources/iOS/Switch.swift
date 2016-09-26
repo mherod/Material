@@ -54,13 +54,13 @@ public protocol SwitchDelegate {
 	/**
      A Switch delegate method for state changes.
      - Parameter control: Switch control.
-     - Parameter state: SwitchState value.
      */
-    func switchDidChangeState(control: Switch, state: SwitchState)
+	func switchStateChanged(control: Switch)
 }
 
 @objc(Switch)
-open class Switch: UIControl {
+@IBDesignable
+public class Switch: UIControl {
 	/// An internal reference to the switchState public property.
 	private var internalSwitchState: SwitchState = .off
 	
@@ -83,72 +83,63 @@ open class Switch: UIControl {
 	open weak var delegate: SwitchDelegate?
 	
 	/// Indicates if the animation should bounce.
-	@IBInspectable
-    public var bounceable = true {
+	@IBInspectable public var bounceable: Bool = true {
 		didSet {
 			bounceOffset = bounceable ? 3 : 0
 		}
 	}
 	
 	/// Button on color.
-	@IBInspectable
-    public var buttonOnColor = Color.clear {
+	@IBInspectable public var buttonOnColor: UIColor = Color.clear {
 		didSet {
 			styleForState(state: switchState)
 		}
 	}
 	
 	/// Button off color.
-	@IBInspectable
-    public var buttonOffColor = Color.clear {
+	@IBInspectable public var buttonOffColor: UIColor = Color.clear {
 		didSet {
 			styleForState(state: switchState)
 		}
 	}
 	
 	/// Track on color.
-	@IBInspectable
-    public var trackOnColor = Color.clear {
+	@IBInspectable public var trackOnColor: UIColor = Color.clear {
 		didSet {
 			styleForState(state: switchState)
 		}
 	}
 	
 	/// Track off color.
-	@IBInspectable
-    public var trackOffColor = Color.clear {
+	@IBInspectable public var trackOffColor: UIColor = Color.clear {
 		didSet {
 			styleForState(state: switchState)
 		}
 	}
 	
 	/// Button on disabled color.
-	@IBInspectable
-    public var buttonOnDisabledColor = Color.clear {
+	@IBInspectable public var buttonOnDisabledColor: UIColor = Color.clear {
 		didSet {
 			styleForState(state: switchState)
 		}
 	}
 	
 	/// Track on disabled color.
-	@IBInspectable
-    public var trackOnDisabledColor = Color.clear {
+	@IBInspectable public var trackOnDisabledColor: UIColor = Color.clear {
 		didSet {
 			styleForState(state: switchState)
 		}
 	}
 	
 	/// Button off disabled color.
-	@IBInspectable
-    public var buttonOffDisabledColor = Color.clear {
+	@IBInspectable public var buttonOffDisabledColor: UIColor = Color.clear {
 		didSet {
 			styleForState(state: switchState)
 		}
 	}
 	
 	/// Track off disabled color.
-	@IBInspectable
-    public var trackOffDisabledColor = Color.clear {
+	@IBInspectable public var trackOffDisabledColor: UIColor = Color.clear {
 		didSet {
 			styleForState(state: switchState)
 		}
@@ -168,16 +159,14 @@ open class Switch: UIControl {
 		}
 	}
 	
-	@IBInspectable
-    open override var isEnabled: Bool {
+	@IBInspectable public override var isEnabled: Bool {
 		didSet {
 			styleForState(state: internalSwitchState)
 		}
 	}
 	
 	/// A boolean indicating if the switch is on or not.
-	@IBInspectable
-    public var on: Bool {
+	@IBInspectable public var on: Bool {
 		get {
 			return .on == internalSwitchState
 		}
@@ -244,19 +233,19 @@ open class Switch: UIControl {
 		}
 	}
 	
-	open override var frame: CGRect {
+	public override var frame: CGRect {
 		didSet {
 			layoutSwitch()
 		}
 	}
 	
-	open override var bounds: CGRect {
+	public override var bounds: CGRect {
 		didSet {
 			layoutSwitch()
 		}
 	}
     
-    open override var intrinsicContentSize: CGSize {
+    public override var intrinsicContentSize: CGSize {
         switch switchSize {
         case .small:
             return CGSize(width: 30, height: 25)
@@ -317,7 +306,7 @@ open class Switch: UIControl {
         prepareSwitchState(state: state)
 	}
 	
-	open override func willMove(toSuperview newSuperview: UIView?) {
+	public override func willMove(toSuperview newSuperview: UIView?) {
 		super.willMove(toSuperview: newSuperview)
 		styleForState(state: internalSwitchState)
 	}
@@ -353,7 +342,7 @@ open class Switch: UIControl {
 					if let s: Switch = self {
 						s.sendActions(for: .valueChanged)
 						completion?(s)
-                        s.delegate?.switchDidChangeState(control: s, state: s.internalSwitchState)
+						s.delegate?.switchStateChanged(control: s)
 					}
 				}
 			} else {
@@ -361,7 +350,7 @@ open class Switch: UIControl {
 				styleForState(state: state)
 				sendActions(for: .valueChanged)
 				completion?(self)
-				delegate?.switchDidChangeState(control: self, state: internalSwitchState)
+				delegate?.switchStateChanged(control: self)
 			}
 		}
 	}
@@ -400,7 +389,7 @@ open class Switch: UIControl {
 		}
 	}
 	
-	open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+	public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 		if true == trackLayer.frame.contains(layer.convert(touches.first!.location(in: self), from: layer)) {
 			setOn(on: .on != internalSwitchState, animated: true)
 		}
@@ -413,7 +402,7 @@ open class Switch: UIControl {
 	
 	/// Prepares the button.
 	private func prepareButton() {
-		button.pulse.animation = .none
+		button.pulseAnimation = .none
 		button.addTarget(self, action: #selector(handleTouchUpInside), for: .touchUpInside)
 		button.addTarget(self, action: #selector(handleTouchDragInside), for: .touchDragInside)
 		button.addTarget(self, action: #selector(handleTouchUpOutsideOrCanceled), for: .touchCancel)
