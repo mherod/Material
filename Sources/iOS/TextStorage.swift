@@ -1,39 +1,39 @@
 /*
-* Copyright (C) 2015 - 2016, Daniel Dahan and CosmicMind, Inc. <http://cosmicmind.io>.
-* All rights reserved.
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are met:
-*
-*	*	Redistributions of source code must retain the above copyright notice, this
-*		list of conditions and the following disclaimer.
-*
-*	*	Redistributions in binary form must reproduce the above copyright notice,
-*		this list of conditions and the following disclaimer in the documentation
-*		and/or other materials provided with the distribution.
-*
-*	*	Neither the name of Material nor the names of its
-*		contributors may be used to endorse or promote products derived from
-*		this software without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (C) 2015 - 2016, Daniel Dahan and CosmicMind, Inc. <http://cosmicmind.io>.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *	*	Redistributions of source code must retain the above copyright notice, this
+ *		list of conditions and the following disclaimer.
+ *
+ *	*	Redistributions in binary form must reproduce the above copyright notice,
+ *		this list of conditions and the following disclaimer in the documentation
+ *		and/or other materials provided with the distribution.
+ *
+ *	*	Neither the name of CosmicMind nor the names of its
+ *		contributors may be used to endorse or promote products derived from
+ *		this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 import UIKit
 
 internal typealias TextWillProcessEdit = (TextStorage, String, NSRange) -> Void
 internal typealias TextDidProcessEdit = (TextStorage, NSTextCheckingResult?, NSRegularExpression.MatchingFlags, UnsafeMutablePointer<ObjCBool>) -> Void
 
-open class TextStorage: NSTextStorage {
+public class TextStorage: NSTextStorage {
 	/// A callback that is executed when a process edit will happen.
 	internal var textWillProcessEdit: TextWillProcessEdit?
 	
@@ -41,10 +41,10 @@ open class TextStorage: NSTextStorage {
 	internal var textDidProcessEdit: TextDidProcessEdit?
 	
 	/// A storage facility for attributed text.
-	open lazy var store: NSMutableAttributedString = NSMutableAttributedString()
+	public lazy var store: NSMutableAttributedString = NSMutableAttributedString()
 	
 	/// The regular expression to match text fragments against.
-	open var expression: NSRegularExpression?
+	public var expression: NSRegularExpression?
 	
 	/// Initializer.
 	public required init?(coder aDecoder: NSCoder) {
@@ -57,12 +57,12 @@ open class TextStorage: NSTextStorage {
 	}
 	
 	/// A String value of the attirbutedString property.
-	open override var string: String {
+	public override var string: String {
 		return store.string
 	}
 	
 	/// Processes the text when editing.
-	open override func processEditing() {
+	public override func processEditing() {
 		let range: NSRange = (string as NSString).paragraphRange(for: editedRange)
 		
 		textWillProcessEdit?(self, string, range)
@@ -85,7 +85,7 @@ open class TextStorage: NSTextStorage {
 	If you don't need this value, pass NULL.
 	- Returns: The attributes for the character at index.
 	*/
-	open override func attributes(at location: Int, effectiveRange range: NSRangePointer?) -> [String : Any] {
+	public override func attributes(at location: Int, effectiveRange range: NSRangePointer?) -> [String : Any] {
 		return store.attributes(at: location, effectiveRange: range)
 	}
 	
@@ -95,7 +95,7 @@ open class TextStorage: NSTextStorage {
 	- Parameter str: The string value that the characters
 	will be replaced with.
 	*/
-	open override func replaceCharacters(in range: NSRange, with str: String) {
+	public override func replaceCharacters(in range: NSRange, with str: String) {
 		store.replaceCharacters(in: range, with: str)
 		edited(NSTextStorageEditActions.editedCharacters, range: range, changeInLength: str.utf16.count - range.length)
 	}
@@ -106,7 +106,7 @@ open class TextStorage: NSTextStorage {
 	- Parameter range: A range of characters that will have their
 	attributes updated.
 	*/
-	open override func setAttributes(_ attrs: [String : Any]?, range: NSRange) {
+	public override func setAttributes(_ attrs: [String : Any]?, range: NSRange) {
 		store.setAttributes(attrs, range: range)
 		edited(NSTextStorageEditActions.editedAttributes, range: range, changeInLength: 0)
 	}
