@@ -73,9 +73,11 @@ open class BottomTabBar: UITabBar {
 	
     open override func layoutSublayers(of layer: CALayer) {
         super.layoutSublayers(of: layer)
-        if self.layer == layer {
-            layoutShape()
+        guard self.layer == layer else {
+            return
         }
+        
+        layoutShape()
     }
     
 	open override func layoutSubviews() {
@@ -124,7 +126,7 @@ open class BottomTabBar: UITabBar {
      */
 	public func prepareView() {
 		depthPreset = .depth1
-        divider.alignment = .top
+        dividerAlignment = .top
 		contentScaleFactor = Device.scale
 		backgroundColor = Color.white
         let image = UIImage.imageWithColor(color: Color.clear, size: CGSize(width: 1, height: 1))
@@ -132,21 +134,3 @@ open class BottomTabBar: UITabBar {
 		backgroundImage = image
 	}
 }
-
-/// A memory reference to the TabBarItem instance.
-private var TabBarKey: UInt8 = 0
-
-extension UITabBar {
-    /// TabBarItem reference.
-    public internal(set) var divider: Divider! {
-        get {
-            return AssociatedObject(base: self, key: &TabBarKey) {
-                return Divider(view: self)
-            }
-        }
-        set(value) {
-            AssociateObject(base: self, key: &TabBarKey, value: value)
-        }
-    }
-}
-

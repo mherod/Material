@@ -57,7 +57,7 @@ public protocol TabBarDelegate {
     optional func tabBarDidSelectButton(tabBar: TabBar, button: UIButton)
 }
 
-open class TabBar: BarView {
+open class TabBar: Bar {
     /// A boolean indicating if the TabBar line is in an animation state.
     open internal(set) var isAnimating = false
     
@@ -78,7 +78,7 @@ open class TabBar: BarView {
                 b.removeFromSuperview()
             }
 			
-            contentView.grid.views = buttons as [UIView]
+            centerViews = buttons as [UIView]
             
 			layoutSubviews()
 		}
@@ -129,29 +129,30 @@ open class TabBar: BarView {
     
     open override func layoutSubviews() {
 		super.layoutSubviews()
-		if willRenderView {
-            guard 0 < buttons.count else {
-                return
-            }
-            
-            let columns: Int = contentView.grid.axis.columns / buttons.count
-            for b in buttons {
-                b.grid.columns = columns
-                b.contentEdgeInsets = .zero
-                b.cornerRadius = 0
-                
-                if isLineAnimated {
-                    prepareLineAnimationHandler(button: b)
-                }
-            }
-            contentView.grid.reload()
-                
-            if nil == selected {
-                selected = buttons.first
-            }
-                
-            line.frame = CGRect(x: selected!.x, y: .bottom == lineAlignment ? height - lineHeight : 0, width: selected!.width, height: lineHeight)
+        guard willLayout else {
+            return
         }
+        
+        guard 0 < buttons.count else {
+            return
+        }
+            
+        for b in buttons {
+            b.grid.columns = 0
+            b.cornerRadius = 0
+            b.contentEdgeInsets = .zero
+            
+            if isLineAnimated {
+                prepareLineAnimationHandler(button: b)
+            }
+        }
+        contentView.grid.reload()
+            
+        if nil == selected {
+            selected = buttons.first
+        }
+            
+        line.frame = CGRect(x: selected!.x, y: .bottom == lineAlignment ? height - lineHeight : 0, width: selected!.width, height: lineHeight)
 	}
 	
 	/// Handles the button touch event.
@@ -199,15 +200,15 @@ open class TabBar: BarView {
     
 	/**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepareView method
+     it is recommended to override the prepare method
      to initialize property values and other setup operations.
-     The super.prepareView method should always be called immediately
+     The super.prepare method should always be called immediately
      when subclassing.
      */
-	open override func prepareView() {
-		super.prepareView()
-        
-        autoresizingMask = .flexibleWidth
+	open override func prepare() {
+		super.prepare()
+        contentEdgeInsetsPreset = .none
+        interimSpacePreset = .none
         prepareLine()
         prepareDivider()
 	}
@@ -223,7 +224,7 @@ open class TabBar: BarView {
     
     /// Prepares the divider.
     private func prepareDivider() {
-        divider.alignment = .top
+        dividerAlignment = .top
     }
     
     /**

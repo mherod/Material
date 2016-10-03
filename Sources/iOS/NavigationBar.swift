@@ -40,9 +40,6 @@ public enum NavigationBarStyle: Int {
 
 @IBDesignable
 open class NavigationBar: UINavigationBar {
-    /// A reference to the divider.
-    open internal(set) var divider: Divider!
-    
     open override var intrinsicContentSize: CGSize {
         switch navigationBarStyle {
         case .small:
@@ -64,14 +61,14 @@ open class NavigationBar: UINavigationBar {
 		return 0 < width && 0 < height && nil != superview
 	}
 	
-	/// A preset wrapper around contentInset.
+	/// A preset wrapper around contentEdgeInsets.
 	open var contentEdgeInsetsPreset = EdgeInsetsPreset.none {
 		didSet {
             contentEdgeInsets = EdgeInsetsPresetToValue(preset: contentEdgeInsetsPreset)
 		}
 	}
 	
-	/// A wrapper around grid.contentInset.
+	/// A reference to EdgeInsets.
 	@IBInspectable
     open var contentEdgeInsets = EdgeInsets.zero {
 		didSet {
@@ -158,9 +155,11 @@ open class NavigationBar: UINavigationBar {
     
     open override func layoutSublayers(of layer: CALayer) {
         super.layoutSublayers(of: layer)
-        if self.layer == layer {
-            layoutShape()
+        guard self.layer == layer else {
+            return
         }
+        
+        layoutShape()
     }
 	
 	open override func layoutSubviews() {
@@ -175,9 +174,7 @@ open class NavigationBar: UINavigationBar {
 			layoutNavigationItem(item: v)
 		}
         
-        if let v = divider {
-            v.reload()
-        }
+        divider.reload()
 	}
 	
 	open override func pushItem(_ item: UINavigationItem, animated: Bool) {
@@ -303,7 +300,6 @@ open class NavigationBar: UINavigationBar {
 		shadowImage = image
 		setBackgroundImage(image, for: .default)
 		backgroundColor = Color.white
-        prepareDivider()
 	}
 	
 	/**
@@ -325,9 +321,4 @@ open class NavigationBar: UINavigationBar {
         }
         item.titleView = UIView(frame: .zero)
 	}
-	
-    /// Prepares the divider.
-    private func prepareDivider() {
-        divider = Divider(view: self)
-    }
 }
