@@ -86,11 +86,11 @@ extension UIViewController {
 }
 
 open class SnackbarController: RootController {
+    /// Reference to the Snackbar.
+    open private(set) lazy var snackbar: Snackbar = Snackbar()
+    
     /// A boolean indicating if the Snacbar is animating.
     open internal(set) var isAnimating = false
-    
-    /// Reference to the Snackbar.
-    open internal(set) lazy var snackbar: Snackbar = Snackbar()
     
     /// Delegation handler.
     open weak var delegate: SnackbarControllerDelegate?
@@ -102,7 +102,8 @@ open class SnackbarController: RootController {
      Animates to a SnackbarStatus.
      - Parameter status: A SnackbarStatus enum value.
      */
-    open func animate(snackbar status: SnackbarStatus, delay: TimeInterval = 0, animations: ((Snackbar) -> Void)? = nil, completion: ((Snackbar) -> Void)? = nil) -> AnimationDelayCancelBlock {
+    @discardableResult
+    open func animate(snackbar status: SnackbarStatus, delay: TimeInterval = 0, animations: ((Snackbar) -> Void)? = nil, completion: ((Snackbar) -> Void)? = nil) -> AnimationDelayCancelBlock? {
         return Animation.delay(time: delay) { [weak self, status = status, animations = animations, completion = completion] in
             guard let s = self else {
                 return
@@ -163,13 +164,13 @@ open class SnackbarController: RootController {
     
     /**
      Prepares the view instance when intialized. When subclassing,
-     it is recommended to override the prepareView method
+     it is recommended to override the prepare method
      to initialize property values and other setup operations.
-     The super.prepareView method should always be called immediately
+     The super.prepare method should always be called immediately
      when subclassing.
      */
-    open override func prepareView() {
-        super.prepareView()
+    open override func prepare() {
+        super.prepare()
         prepareSnackbar()
     }
     

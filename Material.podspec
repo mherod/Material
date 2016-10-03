@@ -6,15 +6,14 @@ Pod::Spec.new do |s|
   s.homepage = 'http://cosmicmind.io'
   s.social_media_url = 'https://www.facebook.com/cosmicmindio'
   s.authors = { 'CosmicMind, Inc.' => 'support@cosmicmind.io' }
-  s.source = { git: 'https://github.com/CosmicMind/Material.git', tag: s.version }
+  s.source = { :git => 'https://github.com/CosmicMind/Material.git', :tag => s.version }
   s.ios.deployment_target = '8.0'
   s.ios.source_files = 'Sources/iOS/**/*.swift'
   s.osx.deployment_target = '10.9'
   s.osx.source_files = 'Sources/macOS/**/*.swift'
   s.requires_arc = true
   s.resource_bundles = {
-    'io.cosmicmind.material.icons' => ['Sources/**/*.xcassets'],
-    'io.cosmicmind.material.fonts' => ['Sources/**/*.ttf']
+      'io.cosmicmind.material.icons' => ['Sources/**/*.xcassets'],
+	  'io.cosmicmind.material.fonts' => ['Sources/**/*.ttf']
   }
-  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '3.0' }
 end
